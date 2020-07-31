@@ -1,0 +1,7 @@
+app/config/local.neon
+/vendor/*
+/www/files/
+/nbproject/
+/log/
+/www/images/thumbs/
+/www/admin_files/css/AdminLTE.css.map

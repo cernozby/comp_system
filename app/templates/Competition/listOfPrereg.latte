@@ -1,0 +1,46 @@
+{block content}
+  {if !$id}
+    <div class="text-center">
+      <div class="row">
+        <p class="h2">
+        {foreach $CompPrereg as $c}
+        <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+          <a n:href="this id=>$c->id_comp" class="btn col-lg-8 col-md-8 bg-warning mt-4 p-4" title="{$c->name}" >
+            <i class=" fa fa-trophy fa-5x "></i>
+            <br /><b>{$c->name}</b>
+            <br/> datum: {$c->start|date:'%d.%m.%Y'}
+          </a>
+        </div>
+        {/foreach}
+        </p>
+      </div>
+    </div>
+  {else}
+
+    {foreach $prereg as $key => $p}
+      {var $i = 1}
+    <table class="table table-hover border text-center">
+      <thead class="bg-warning">
+      <tr style="border-bottom: 3px solid black !important;">
+        <th colspan="4" class="text-left">{$key|upper:} </th>
+      </tr>
+      <tr >
+        <th scope="col" class="text-left" >#</th>
+        <th scope="col" style="width: 30%">Jméno</th>
+        <th scope="col" style="width: 30%">Rok Narození</th>
+        <th scope="col" style="width: 30%">Oddíl / Sponzor</th>
+      </tr>
+      </thead>
+      <tbody>
+        {foreach $p as $x }
+        <tr>
+          <th scope="row" class="align-middle text-left" >{$i++}</th>
+          <td class="align-middle" >{$x->first_name} {$x->last_name}</td>
+          <td class="align-middle" >{$x->born}</td>
+          <td class="align-middle" >{$x->club}</td>
+        </tr>
+        {/foreach}
+      </tbody>
+    </table>
+    {/foreach}
+  {/if}

@@ -1,0 +1,36 @@
+{block content}
+
+<div class="table-responsive">
+  <table class="table table-hover border text-center">
+    <thead class="bg-warning">
+    <tr>
+      <th class="text-center"> autor </th>
+      <th class="text-center"> url </th>
+      <th class="text-center"> klíčová slova </th>
+      <th class="text-center"> titulek </th>
+      <th class="text-center"> obsah </th>
+      <th class="text-center"> úpravy </th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach $articles as $item}
+      <tr>
+      {var $user = $UserModel->getRow('user', $item->user_id)}
+        <td class="text-center"> {$user->first_name} {$user->last_name} </td>
+        <td class="text-center"> {$item->url}</td>
+        <td class="text-center"> {$item->keywords} </td>
+        <td class="text-center"> {$item->title}</td>
+        <td class="text-center" title="{$item->text}"> {$item->text|truncate:50}</td>
+        <td class="text-center">
+          <a href="{plink Administration:addArticle 'id' => $item->id_article}" title="upravit" class="btn">
+            <i class="fas fa-pencil-alt fa"></i>
+          </a>
+          <a href="{plink deleteItem! type=>'ArticleModel', entity_id=>$item->id_article}" title="smazat" class="btn">
+            <i class="fa fa-trash fa"></i>
+          </a>
+        </td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+</div>

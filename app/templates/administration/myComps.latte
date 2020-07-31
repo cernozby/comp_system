@@ -1,0 +1,47 @@
+{block content}
+
+{var $i = 1}
+<div class="table-responsive">
+<table class="table table-hover border text-center">
+  <thead class="bg-warning">
+  <tr>
+    <th class="text-center">#</th>
+    <th class="text-center" >Název</th>
+    <th class="text-center">typ</th>
+    <th class="text-center">pro</th>
+    <th class="text-center overflow">Předpokládaný start</th>
+    <th class="text-center">Předpokládaný konec</th>
+    <th class="text-center">start online registrace</th>
+    <th class="text-center">konec online registrace</th>
+    <th class="text-center">propozice v pdf</th>
+    <th class="text-center" style="width: 200px">Úpravy</th>
+  </tr>
+  </thead>
+  <tbody>
+  {foreach $comps as $c}
+    <tr >
+      <th scope="row">{$i++}</th>
+      <td {if strlen($c->name) > 30}title="{$c->name}" {/if} class="title">{$c->name|truncate:31}</td>
+      <td>{if empty($c->comp_type)}<span class="text-danger text-bold h5" >X</span>{else}{$c->comp_type}{/if}</td>
+      <td>{if empty($c->comp_for)}<span class="text-danger text-bold h5" >X</span>{else}{$c->comp_for}{/if}</td>
+      <td>{if empty($c->start)}<span class="text-danger text-bold h5" >X</span>{else}{$c->start|date:'%d.%m.%Y %H:%M'}{/if}</td>
+      <td>{if empty($c->end)}<span class="text-danger text-bold h5" >X</span>{else}{$c->end|date:'%d.%m.%Y %H:%M'}{/if}</td>
+      <td>{if empty($c->online_registration_start)}<span class="text-danger text-bold h5" >X</span>{else}{$c->online_registration_start|date:'%d.%m.%Y %H:%M'}{/if}</td>
+      <td>{if empty($c->online_registration_start)}<span class="text-danger text-bold h5" >X</span>{else}{$c->online_registration_end|date:'%d.%m.%Y %H:%M'}{/if}</td>
+      <td>{if empty($c->plan_url)}<span class="text-danger text-bold h5" >X</span>{else}<a class="link" href="{$c->plan_url}" target="_blank">Náhled</a>{/if} </td>
+      <td class="text-center">
+        <a href="{plink Administration:newComp $c->id_comp}" title="upravit" class="btn">
+          <i class="fas fa-pencil-alt fa"></i>
+        </a>
+        <a href="{plink deleteItem! type=>'CompModel', entity_id=>$c->id_comp}" title="smazat" class="btn">
+          <i class="fa fa-trash fa"></i>
+        </a>
+        <a href="{plink Administration:compSetting id=>$c->id_comp}" title="nastavení závodu" class="btn">
+          <i class="fas fa-cog"></i>
+        </a>
+      </td>
+    </tr>
+  {/foreach}
+  </tbody>
+</table>
+</div>

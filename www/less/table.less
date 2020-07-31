@@ -1,0 +1,90 @@
+/*
+ * Component: Table
+ * ----------------
+ */
+
+.table {
+  //Cells
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        border-top: 1px solid @box-border-color;
+      }
+    }
+  }
+  //thead cells
+  > thead > tr > th {
+    border-bottom: 2px solid @box-border-color;
+  }
+  //progress bars in tables
+  tr td .progress {
+    margin-top: 5px;
+  }
+}
+
+//Bordered Table
+.table-bordered {
+  border: 1px solid @box-border-color;
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        border: 1px solid @box-border-color;
+      }
+    }
+  }
+  > thead > tr {
+    > th,
+    > td {
+      border-bottom-width: 2px;
+    }
+  }
+}
+
+.table.no-border {
+  &,
+  td,
+  th {
+    border: 0;
+  }
+}
+
+/* .text-center in tables */
+table.text-center {
+  &, td, th {
+    text-align: center;
+  }
+}
+
+.table.align {
+  th {
+    text-align: left;
+  }
+  td {
+    text-align: right;
+  }
+}
+
+.result-table {
+  table tr th {
+    text-align: center;
+  }
+  thead th {
+    border-bottom: none !important;
+  }
+
+  tr td {
+    padding: 0px !important;
+  }
+
+  tr td input {
+    border: none !important;
+    padding: 5px !important;
+    border: 1px solid black !important;
+  }
+}

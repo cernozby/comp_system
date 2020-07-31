@@ -1,0 +1,77 @@
+{block content}
+
+{if !$id_comp}
+  <div class="text-center">
+    <div class="row">
+      <p class="h2">
+        {foreach $comps as $c}
+      <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+        <a n:href="this id=>$c->id_comp" class="btn col-lg-8 col-md-8 bg-warning mt-4 p-4" title="{$c->name}">
+          <i class=" fa fa-trophy fa-5x "></i>
+          <br/><br/><b>{$c->name}</b>
+        </a>
+      </div>
+      {/foreach}
+      </p>
+    </div>
+  </div>
+{elseif $id_comp && !$id_cat}
+  <div class="text-center">
+    <div class="row">
+      <p class="h2">
+        {foreach $cat as $c}
+      <div class="col-lg-6 col-md-6 col-sm-6">
+        <a n:href="this id=>$id_comp, cat=>$c->id_category" class="btn btn-add-bg bg-warning"> <i
+                  class=" fa fa-trophy fa-5x "></i> <br/><br/><b>{$c->name}</b></a>
+      </div>
+      {/foreach}
+      </p>
+    </div>
+  </div>
+{elseif $id_comp && $id_cat}
+  <div class="table-responsive">
+    <table class="table table-hover result-table">
+      <thead class="bg-warning border">
+      <tr>
+        <th colspan="100%" class="text-center">{$cat_name}</th>
+      </tr>
+      <tr>
+        <th class="text-center">jméno</th>
+        <th class="text-center ">ročník</th>
+        <th class="text-center">oddíl</th>
+        {foreach $results as $h}
+          {var $a = array_keys($h)}
+          {foreach $a as $name}
+              {if !$iterator->isFirst() && !$iterator->isLast() }
+                <th class="text-center">{$name}</th>
+              {/if}
+          {/foreach}
+          <th class="center"> pořadí</th>
+          {breakIf $iterator->isFirst()}
+        {/foreach}
+      </tr>
+      </thead>
+      <tbody class="table-bordered">
+
+        {foreach $results as $array}
+        <tr>
+          {foreach $array as $key => $item}
+            {if $iterator->isFirst()}
+              {var $racer = $racerModel->getRow('racer', $item)}
+              <th class="text-center"> {$racer->first_name} {$racer->last_name} </th>
+              <th class="text-center"> {$racer->born} </th>
+              <th class="text-center"> {$racer->club} </th>
+            {elseif $iterator->isLast()}
+              <th class="text-center bg-warning">{if $item == 0} X {else} {$item} {/if}</th>
+
+            {else}
+              <th class="text-center">{if $item == 0} X {else} {$item} {/if}</th>
+            {/if}
+          {/foreach}
+
+        </tr>
+      {/foreach}
+      </tbody>
+    </table>
+  </div>
+{/if}

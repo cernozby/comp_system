@@ -1,0 +1,96 @@
+{block content}
+
+{form compForm}
+  <div class="cotainer">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card bg-gray-light">
+          <div class="card-header bg-warning"><span class="panel-title">Nový závod</span></div>
+          <div class="card-body">
+
+            <div class="form-group row">
+              <div class="col-md-12">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-tag"></i> </span>
+                  {input name class=>"form-control"}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 ">{label comp_type/}</div>
+              <div class="col-md-6">{label comp_for/}</div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  {input comp_type class=>"form-control"}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group">
+                  {input comp_for class=>"form-control"}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 ">{label start/}</div>
+              <div class="col-md-6">{label end/}</div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  {input start class=>"form-control"}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group">
+                  {input end class=>"form-control"}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 ">{label online_registration_start/}</div>
+              <div class="col-md-6">{label online_registration_end/}</div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  {input online_registration_start class=>"form-control"}
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="input-group custom-file">
+                  {input online_registration_end class => "form-control"}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 ">{label plan_url/}</div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <div class="input-group">
+                  {input plan_url class=>"custom-file-input"}
+                  <label class="custom-file-label" for="customFile">vyberte...</label>
+                </div>
+              </div>
+            </div>
+
+
+            {input registration class=>"btn btn-warning btn-block text-dark"}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/form}
+
+
+

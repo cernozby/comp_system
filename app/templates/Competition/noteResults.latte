@@ -1,0 +1,75 @@
+{block content}
+
+{if !$id_comp}
+<div class="text-center">
+  <div class="row">
+    <p class="h2">
+      {foreach $comps as $c}
+    <div class="col-lg-6 col-md-6 d-flex justify-content-center">
+      <a n:href="this id=>$c->id_comp" class="btn col-lg-8 col-md-8 bg-warning mt-4 p-4" title="{$c->name}" >
+        <i class=" fa fa-pencil-alt fa-5x "></i>
+        <br /><br /><b>{$c->name}</b>
+      </a>
+    </div>
+    {/foreach}
+    </p>
+  </div>
+</div>
+{elseif $id_comp && !$id_cat}
+  <div class="text-center">
+    <div class="row">
+      <p class="h2">
+      {foreach $cat as $c }
+        <div class="col-lg-6 col-md-6">
+          <a n:href="this id=>$id_comp, cat=>$c->id_category" class="btn btn-add-bg bg-warning" > <i class=" fa fa-pencil-alt fa-5x "></i> <br /><br /><b>{$c->name}</b></a>
+        </div>
+      {/foreach}
+      </p>
+    </div>
+  </div>
+{elseif $id_comp && id_cat}
+  {form resultForm}
+    <div class="table-responsive">
+    <table class="table table-hover result-table">
+      <thead class="bg-warning border">
+      <tr>
+        <th colspan="100%" class="text-center">{$cat_name}</th>
+      </tr>
+      <tr>
+        <th class="col-md-8 col-sm-8 col-xs-8 text-center">jméno</th>
+        <th class="text-center ">ročník</th>
+        <th class="col-md-4 col-xs-4 col-sm-4 text-center">oddíl</th>
+        {foreach $names as $n}
+          <th class="text-center">{$n}</th>
+        {/foreach}
+      </tr>
+      </thead>
+      <tbody class="table-bordered">
+      {var $i = 1}
+    {foreach $data as $d}
+      {formContainer $i}
+
+        {input id}
+      <tr ng-repeat="name in getdrugnameNewArray">
+        {var $racer = $racerModel->getRow('racer', $d->racer_id)}
+        <th class="text-center"> {$racer->first_name} {$racer->last_name} </th>
+        <th class="text-center"> {$racer->born} </th>
+        <th class="text-center"> {$racer->club} </th>
+          {foreach $names as $n }
+            <td>{input $n class => "form-control"}</td>
+          {/foreach}
+      </tr>
+      {/formContainer}
+        {var $i = $i + 1}
+    {/foreach}
+      </tbody>
+    </table>
+      <span class="d-flex justify-content-between">
+        {label public /}
+        {input save class => "btn btn-warning btn-block text-dark col-lg-3 col-md-3 col-sm-3" }
+      </span>
+      {input public class => 'form-control col-lg-3 col-md-3 col-sm-3' }
+    </div>
+  {/form}
+
+{/if}

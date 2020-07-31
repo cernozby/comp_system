@@ -1,0 +1,44 @@
+{block content}
+<div class="text-center">
+  <div class="row">
+    <p class="h2">
+    <div class="col-lg-3 col-md-3">
+      <a href="{link Administration:newRacer}" class="btn btn-add-bg bg-warning" > <i class=" fa fa-plus fa-5x "></i> <br /><br /><b>Nový závodník</b></a>
+    </div>
+    {if $myRacersCount > 0}
+      <div class="col-lg-3 col-md-3">
+      <a href="{link Administration:myRacers}" class="btn btn-add-bg bg-warning" > <i class=" fa fa-users fa-5x "></i> <br /><br /><b>{if $myRacersCount == 1}Můj závodník{elseif $isAdmin} Všichni závodníci{else}Moji závodníci{/if} </b></a>
+    </div>
+    {/if}
+    {if $isAdmin}
+      <div class="col-lg-3 col-md-3">
+      <a href="{link Administration:newComp}" class="btn btn-add-bg bg-warning" > <i class=" fa fa-plus fa-5x "></i><br /><br /> <b>Nový závod</b></a>
+    </div>
+    {/if}
+    {if $isAdmin && $myCompCount > 0}
+      <div class="col-lg-3 col-md-3">
+        <a href="{link Administration:myComps}" class="btn btn-add-bg bg-warning" > <i class=" fa fa-trophy fa-5x "></i><br /><br /> <b>{if $myCompCount == 1} Můj závod{else}Mé závody{/if}</b></a>
+      </div>
+    {/if}
+    {if $isAdmin}
+      <div class="col-lg-3 col-md-3">
+      <a n:href="Competition:noteResults" class="btn btn-add-bg bg-warning" > <i class=" fa fa-pencil-alt fa-5x "></i> <br /><br/><b>Zadat výsledky</b></a>
+    </div>
+    {/if}
+    {if $isAdmin}
+    <div class="col-lg-3 col-md-3">
+      <a n:href="Administration:addArticle" class="btn btn-add-bg bg-warning" > <i class=" fa fa-plus fa-5x "></i> <br /><br/> <b>přidat článek</b></a>
+    </div>
+    {/if}
+    {if $isAdmin}
+    <div class="col-lg-3 col-md-3">
+      <a n:href="Administration:MyArticles" class="btn btn-add-bg bg-warning" > <i class=" fa fa-newspaper fa-5x "></i> <br /><br/> <b>Všechny články</b></a>
+    </div>
+    {/if}
+  </p>
+  </div>
+</div>
+
+
+
+

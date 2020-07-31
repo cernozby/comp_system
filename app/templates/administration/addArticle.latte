@@ -1,0 +1,32 @@
+{block content}
+{form articleForm}
+  {label title/}
+  {input title class => "form-control"}
+  <br>
+  {label url/}
+  {input url class => "form-control"}
+  <br>
+  {label keywords/}
+  {input keywords class => "form-control"}
+  <br>
+  {label text/}
+  {input text class => "form-control"}
+  <br>
+  {input add class =>  "form-control btn-warning text-dark col-lg-3 col-md-3 col-sm-3 pull-right"}
+{/form}
+
+<script type="text/javascript" src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea[name=text]",
+        plugins: [
+            "advlist autolink lists link image charmap print preview anchor",
+            "searchreplace visualblocks code fullscreen",
+            "insertdatetime media table contextmenu paste"
+        ],
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+        entities: "160,nbsp",
+        entity_encoding: "named",
+        entity_encoding: "raw"
+    });
+</script>

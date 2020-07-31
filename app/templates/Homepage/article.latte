@@ -1,0 +1,35 @@
+{block content}
+{if $url}
+  {var $user = $userModel->getRow('user', $article->user_id)}
+  <div class="row d-flex justify-content-center article-solo">
+    <span class="col-lg-8 col-md-10 col-sm-10 col-xs-10 ">
+      <h2 class="d-flex justify-content-center">{$article->title|noescape|upper}</h2>
+          {$article->text|noescape}
+     <br>
+     <br>s
+     <small class="article-date text-bold"> {$article->created|date:'%d. %m. %Y'}</small>
+     <small class="pull-right article-name text-bold">{$user->first_name} {$user->last_name}</small>
+    </span>
+  </div>
+{else}
+  {foreach $articles as $item}
+    <div class="row d-flex justify-content-center">
+    <span class="col-lg-8 article">
+      <h3><a href="{plink Homepage:Article 'url' => $item->url}"
+             class="text-warning nav-link">{$item->title|noescape|upper}</a></h3>
+      <div class="article-text">
+        {$item->text|noescape|truncate:1000}
+      </div>
+      {var $user = $userModel->getRow('user', $item->user_id)}
+       <span class="row d-flex justify-content-center">
+        <a href="{plink Homepage:Article 'url' => $item->url}" class="text-dark nav-link">
+          <i class="fa fa-chevron-down fa-5x article-icon d-flex justify-content-center align-items-end"></i>
+        </a>
+      </span>
+      <small class="article-date text-bold"> {$item->created|date:'%d. %m. %Y'}</small>
+      <small class="pull-right article-name text-bold">{$user->first_name} {$user->last_name}</small>
+      <br>
+    </span>
+    </div>
+  {/foreach}
+{/if}
