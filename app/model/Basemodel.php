@@ -5,8 +5,8 @@ class BaseModel {
   use Nette\SmartObject;
 
 
-  public $baseUrl = 'http://localhost/nette-blog/www/';
-  public $basePath = 'C:/xampp/htdocs/nette-blog/www/';
+  public $baseUrl = 'http://localhost/comp_system/www/';
+  public $basePath = 'C:/xampp/htdocs/comp_system/www/';
 
   /**
    * @var
