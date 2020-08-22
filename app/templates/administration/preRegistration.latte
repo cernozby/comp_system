@@ -12,7 +12,7 @@
     </thead>
     <tbody>
     {foreach $comps as $c}
-      <tr {if $compModel->isPrereg($id_racer, $c->id_comp)} class="bg-light-green "{/if}>
+      <tr {if $compModel->isPrereg($id_racer, $c->id_comp)} class="bg-light-green"{/if}>
         <td class="align-middle">{$c->name}</td>
         <td class="align-middle">{$c->start|date:'%d.%m.%Y'}</td>
         <td class="align-middle">{$c->comp_type}</td>

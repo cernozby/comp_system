@@ -5,7 +5,7 @@ class BaseModel {
   use Nette\SmartObject;
 
 
-  public $baseUrl = 'http://localhost/comp_system/www/';
+  public $baseUrl = 'http://bozala.loc/';
   public $basePath = 'C:/xampp/htdocs/comp_system/www/';
 
   /**

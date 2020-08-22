@@ -42,7 +42,7 @@
         {foreach $results as $h}
           {var $a = array_keys($h)}
           {foreach $a as $name}
-              {if !$iterator->isFirst() && !$iterator->isLast() }
+              {if $name != 'racer_id' && !$iterator->isLast() }
                 <th class="text-center">{$name}</th>
               {/if}
           {/foreach}
@@ -58,9 +58,11 @@
           {foreach $array as $key => $item}
             {if $iterator->isFirst()}
               {var $racer = $racerModel->getRow('racer', $item)}
-              <th class="text-center"> {$racer->first_name} {$racer->last_name} </th>
+              <th class="text-center"> {$racer->first_name}&nbsp;{$racer->last_name} </th>
               <th class="text-center"> {$racer->born} </th>
-              <th class="text-center"> {$racer->club} </th>
+              <th class="text-center">
+                {foreach explode(' ', $racer->club) as  $word}{$word}&nbsp;{/foreach}
+              </th>
             {elseif $iterator->isLast()}
               <th class="text-center bg-warning">{if $item == 0} X {else} {$item} {/if}</th>
 

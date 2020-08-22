@@ -14,4 +14,47 @@
   display: inline-block;
   margin-top: -20px;
 }
+.article {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  border-bottom: 1px solid #ffc107;
+  border-top: 1px solid #ffc107;
+  border-left: 1px solid #ffc107;
+  background: #fcfcfc;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+.article h3,
+.article .article-text,
+.article .article-name,
+.article .article-date {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.article h3 a {
+  padding-left: 0px;
+  margin-left: 0px;
+}
+.article .article-icon {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #ffc107;
+}
+.article .article-icon:hover {
+  background-color: #ffc107;
+  transition: all 0.4s ease;
+  -webkit-transition: all 0.4s ease;
+}
+.article-solo {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+}
+.article-solo span {
+  background: #fcfcfc;
+}
+.article-solo h2 {
+  padding-top: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ffc107;
+}
 /*# sourceMappingURL=carousel.css.map */

@@ -4,6 +4,8 @@ class ResultModel extends BaseModel {
 
 
   const DEFAULT_BOULDER_POINTS = 100;
+  const AMATER_RESULT_SYSTEM = 1;
+  const COMP_RESULT_SYSTEM = 2;
   /**
    * ResultModel constructor.
    * @param \Nette\Database\Context $database
@@ -49,7 +51,6 @@ class ResultModel extends BaseModel {
           }
         }
       }
-
       //get count of climbers, which cliimb each top or bonus
       foreach ($array as $a) {
         foreach ($a as $key => $item) {
@@ -58,12 +59,10 @@ class ResultModel extends BaseModel {
           }
         }
       }
-
       //get value of each boulder
       foreach ($pointsPerBoulder as $key => $item) {
         $pointsPerBoulder[$key] = self::DEFAULT_BOULDER_POINTS / $item;
       }
-
       //add sum of point to each racer
       foreach ($array as $key => $item) {
         $points = 0;
@@ -78,37 +77,106 @@ class ResultModel extends BaseModel {
       $sort = array_column($array, 'result');
       array_multisort($sort, SORT_DESC, $array);
 
-      $array = $this->addPlace($array);
+      $array = $this->addPlace($array, self::AMATER_RESULT_SYSTEM);
+    } elseif ($cat->comp_type == 'boulder' && $cat->result_system == 'závodní') {
+
+        //get array of result, no ordered
+        foreach ($result as $r) {
+          $T = 0; $PT = 0; $Z = 0; $PZ = 0;
+          foreach ($r as $key => $item) {
+            if ($key != 'id_result') {
+              $array[$r->racer_id][$key] = (int)$item;
+              $pointsPerBoulder[$key] = 0;
+              if($key[-1] == 'z') {
+                if($item != 0) {
+                  $Z++;
+                  $PZ += (int)$item;
+                }
+              } elseif($key[-1] == 't') {
+                if($item != 0) {
+                  $T++;
+                  $PT+= (int)$item;
+                }
+              }
+            }
+          }
+          $array[$r->racer_id]['T'] = $T;
+          $array[$r->racer_id]['PT'] = $PT;
+          $array[$r->racer_id]['Z'] = $Z;
+          $array[$r->racer_id]['PZ'] = $PZ;
+          $array[$r->racer_id]['place'] = '124';
+        }
+
+      $sort_t = array_column($array, 'T');
+      $sort_pt = array_column($array, 'PT');
+      $sort_z = array_column($array, 'Z');
+      $sort_pz = array_column($array, 'PZ');
+      array_multisort($sort_t, SORT_DESC, $sort_pt, SORT_ASC, $sort_z, SORT_DESC, $sort_pz, SORT_ASC, $array);
+      $array = $this->addPlace($array, self::COMP_RESULT_SYSTEM);
 
     }
+    bdump($array);
     return $array;
   }
 
-  public function addPlace(array $array ) : array {
-    $before_keys = array(); $before_result = null; $i = 0;
-    foreach ($array as $key => $item) {
-      if ($before_result == $item['result']) {
-        $before_keys[] = $key;
-        $before_result = $item['result'];
-      } else {
-        if(count($before_keys) > 1) {
-          $i  += count($before_keys) ;
-          foreach ($before_keys as $bk) {
-            $array[$bk]['place'] = ($i - count($before_keys))  .'. - '. ($i - 1).'. ' ;
-          }
-          $before_keys = array();
-          $before_keys[0]  = $key;
-          $before_result = $item['result'];
-          $array[$key]['place'] = $i.'.';
+  public function addPlace(array $array, int $type ) : array {
 
-        } else {
-          $array[$key]['place'] = ++$i.'.';
+    if($type == self::AMATER_RESULT_SYSTEM) {
+      $before_keys = array();
+      $before_result = null;
+      $i = 0;
+      foreach ($array as $key => $item) {
+        if ($before_result == $item['result']) {
+          $before_keys[] = $key;
           $before_result = $item['result'];
-          $before_keys[0] = $key;
+        } else {
+          if (count($before_keys) > 1) {
+            $i += count($before_keys);
+            foreach ($before_keys as $bk) {
+              $array[$bk]['place'] = ($i - count($before_keys)) . '. - ' . ($i - 1) . '. ';
+            }
+            $before_keys = array();
+            $before_keys[0] = $key;
+            $before_result = $item['result'];
+            $array[$key]['place'] = $i . '.';
+
+          } else {
+            $array[$key]['place'] = ++$i . '.';
+            $before_result = $item['result'];
+            $before_keys[0] = $key;
+          }
+        }
+      }
+    } elseif ($type == self::COMP_RESULT_SYSTEM) {
+      $before_keys = array();
+      $before_result = array('T' =>  '0',
+                             'PT' => '0',
+                             'Z' =>  '0',
+                             'PZ' => '0');
+      $i = 0;
+      foreach ($array as $key => $item) {
+        if ($before_result['T'] == $item['T'] && $before_result['PT'] == $item['PT'] && $before_result['Z'] == $item['Z'] && $before_result['PZ'] == $item['PZ']) {
+          $before_keys[] = $key;
+          $before_result = $item;
+        } else {
+          if (count($before_keys) > 1) {
+            $i += count($before_keys);
+            foreach ($before_keys as $bk) {
+              $array[$bk]['place'] = ($i - count($before_keys)) . '. - ' . ($i - 1) . '. ';
+            }
+            $before_keys = array();
+            $before_keys[0] = $key;
+            $before_result = $item;
+            $array[$key]['place'] = $i . '.';
+
+          } else {
+            $array[$key]['place'] = ++$i . '.';
+            $before_result = $item;
+            $before_keys[0] = $key;
+          }
         }
       }
     }
-
     return $array;
   }
 

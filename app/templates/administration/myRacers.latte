@@ -32,7 +32,7 @@
       </a>
     </td>
     <td class="align-middle">
-      {if $compModel->getCompForRegister($r->id_racer)}
+      {if $compModel->getCompForRegister($r->id_racer) || $compModel->getPreregistredCompsName($r->id_racer)}
       <a href="{plink Administration:preRegistration id=>$r->id_racer}" class="btn btn-warning text-dark">předregistrovat</a>
       {else}
         Žádný závod k přeregistraci
