@@ -35,6 +35,11 @@
       <a n:href="Administration:MyArticles" class="btn btn-add-bg bg-warning" > <i class=" fa fa-newspaper fa-5x "></i> <br /><br/> <b>Všechny články</b></a>
     </div>
     {/if}
+    {if $isAdmin}
+      <div class="col-lg-3 col-md-3">
+        <a n:href="Homepage:newPasswd" class="btn btn-add-bg bg-warning" > <i class=" fa fa-lock fa-5x "></i> <br /><br/> <b>Změnit Heslo</b></a>
+      </div>
+    {/if}
   </p>
   </div>
 </div>

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f83c4b5faf4346d6f1f85f605a30d83f",
+    "content-hash": "cd7224e37ec591656ab7a4542d75cfd9",
     "packages": [
         {
             "name": "kdyby/forms-replicator",

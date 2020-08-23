@@ -15,6 +15,8 @@ class Constants
     FORM_SHORT = 'Toto pole nesmí mít méně než %d znaků!',
     FORM_BORN_RANGE = 'Rok narození musí být mezi %d a %d! ';
 
+  const
+    WEB_ADDRESS = 'http://bozala.loc';
   const NO_CZECH_CHAR = Array(
   'ä'=>'a',
   'Ä'=>'A',

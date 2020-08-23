@@ -4,8 +4,7 @@ namespace App\Presenters;
 
 use Nette;
 use Nette\Application\UI\Form;
-use Nette\ComponentModel\IContainer;
-use Nette\Security\User;
+use Nette\Utils\Random;
 
 class HomepagePresenter extends \BasePresenter {
 
@@ -27,7 +26,6 @@ class HomepagePresenter extends \BasePresenter {
     $this->template->articles = $this->ArticleModel->getArticles();
     $this->template->userModel = $this->UserModel;
     $this->template->url = $url;
-    bdump($url);
     if($url) {
       $this->template->article = $this->ArticleModel->getArticlebyUrl($url);
     }
@@ -66,6 +64,7 @@ class HomepagePresenter extends \BasePresenter {
   }
 
   public function RegistracionFormSucceeded($form, $values) {
+    $passwd = $values->passwd;
     $userModel = $this->context->createInstance('UserModel');
     try {
       $userModel->newUser($values);
@@ -73,6 +72,17 @@ class HomepagePresenter extends \BasePresenter {
       $this->flashMessage($e->getMessage(), 'error');
       $this->redirect('this');
     }
+    $mail = new Nette\Mail\Message;
+    $mailer = new Nette\Mail\SendmailMailer;
+
+    $mail->setFrom('Zbysa.Cernohous@seznam.cz')
+         ->addTo($values->email)
+         ->setSubject('Registrace do systému bozala.cz')
+         ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>Registrace do systému <a href="'.\Constants::WEB_ADDRESS.'">bozala.cz</a> proběhla úspešně!, můžete začít z registrací závodníků. Kdyby jste si neveděli rady s přihlášením závodníků, návod je <a href="'.\Constants::WEB_ADDRESS.'/#"> zde.</a></p>
+                             <p> Vaše přihlašovací jméno je:<b> '.$values->email.'</b> <br>Vaše heslo je:<b> '.$passwd.'</b></p>
+                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous.cz</p>
+                             <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>');
+    $mailer->send($mail);
     $this->flashMessage('Byl jste úspěšně zaregistrován.');
     $this->redirect('Homepage:login');
   }
@@ -91,6 +101,75 @@ class HomepagePresenter extends \BasePresenter {
     $form->addSubmit('login', 'Přihlásít');
     $form->onSuccess[] = [$this, 'LoginFormSucceeded'];
     return $form;
+  }
+
+  public function createComponentNewPasswdForm() {
+    $form = new Form();
+    $form->addPassword('passwd')
+         ->setRequired('Heslo: ' . \Constants::FORM_MSG_REQUIRED)
+         ->addRule(FORM::MIN_LENGTH, \Constants::FORM_SHORT_PASSWD, 5)
+         ->addRule(FORM::MAX_LENGTH, \Constants::FORM_LONG_PASSWD, 30)
+         ->setHtmlAttribute('placeholder', 'Heslo');
+    $form->addPassword('passwd_verify')
+         ->setRequired('Heslo: ' . \Constants::FORM_MSG_REQUIRED)
+         ->setHtmlAttribute('placeholder', 'Heslo ověření')
+         ->setOmitted()
+         ->addRule(Form::EQUAL, 'Zadaná hesla se neschodují.', $form['passwd']);
+    $form->addSubmit('send', 'změnit');
+    $form->onSuccess[] = [$this, 'NewPasswdFormSucceeded'];
+    return $form;
+  }
+
+  public function NewPasswdFormSucceeded($form, $values) {
+    $mail = new Nette\Mail\Message;
+    $mailer = new Nette\Mail\SendmailMailer;
+    try {
+      $this->UserModel->changePasswd($this->user->roles['email'], $values->passwd);
+      $mail->setFrom('Zbysa.Cernohous@seznam.cz')
+           ->addTo($this->user->roles['email'])
+           ->setSubject('Obnova hesla')
+           ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>V emailu vám posíláme Vaše změnené přihlašovací údaje údaje s novým heslem.</p>
+                             <p> Vaše přihlašovací jméno je:<b> '.$this->user->roles['email'].'</b> <br>Vaše heslo je:<b> '.$values->passwd.'</b></p>
+                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous.cz</p>
+                             <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>');
+      $mailer->send($mail);
+      $this->flashMessage('Změna hesla proběhla úspešně!');
+      $this->redirect('Administration:administration');
+    } catch (\Nette\Security\AuthenticationException $e) {
+      $this->flashMessage('Změna hesla se nepovedla!');
+    }
+  }
+
+  public function createComponentForgetPasswdForm() {
+    $form = new Form();
+    $form->addEmail('email', 'Email použitý při registraci')
+         ->setRequired('email: ' . \Constants::FORM_MSG_REQUIRED)
+         ->addRule(FORM::IS_IN,'Zadaný email nebyl nalezen.',$this->UserModel->getAllMails())
+         ->setHtmlAttribute('placeholder', 'email');
+    $form->addSubmit('send', 'Odeslat');
+    $form->onSuccess[] = [$this, 'ForgetPasswdFormSucceeded'];
+    return $form;
+  }
+
+  public function ForgetPasswdFormSucceeded($form, $values) {
+    $newPasswd = Random::generate(6);
+    $mail = new Nette\Mail\Message;
+    $mailer = new Nette\Mail\SendmailMailer;
+    try {
+      $this->UserModel->changePasswd($values->email, $newPasswd);
+      $mail->setFrom('Zbysa.Cernohous@seznam.cz')
+           ->addTo($values->email)
+           ->setSubject('Obnova hesla')
+           ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>V emailu vám posíláme Vaše přihlašovací údaje s novým heslem</p>
+                             <p> Vaše přihlašovací jméno je:<b> '.$values->email.'</b> <br>Vaše heslo je:<b> '.$newPasswd.'</b></p>
+                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous.cz</p>
+                             <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>');
+      $mailer->send($mail);
+      $this->flashMessage('Email s novým heslem byl úspešně odeslán');
+      $this->redirect('Homepage:login');
+    } catch (\Nette\Security\AuthenticationException $e) {
+      $this->flashMessage('Odeslání nového hesla se nepovedlo!');
+    }
   }
 
   public function LoginFormSucceeded($form, $values) {
