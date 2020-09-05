@@ -17,30 +17,64 @@
     </div>
   {else}
 
-    {foreach $prereg as $key => $p}
+    {foreach $prereg['prereg'] as $key => $p}
       {var $i = 1}
     <table class="table table-hover border text-center">
       <thead class="bg-warning">
       <tr style="border-bottom: 3px solid black !important;">
-        <th colspan="4" class="text-left">{$key|upper:} </th>
+        <th colspan="100%" class="text-left">{$key|upper:} </th>
       </tr>
       <tr >
         <th scope="col" class="text-left" >#</th>
         <th scope="col" style="width: 30%">Jméno</th>
         <th scope="col" style="width: 30%">Rok Narození</th>
         <th scope="col" style="width: 30%">Oddíl / Sponzor</th>
+        {if $user->isInRole('admin')}
+          <th scope="col" style="width: 30%">Akce</th>
+        {/if}
       </tr>
       </thead>
       <tbody>
         {foreach $p as $x }
-        <tr>
-          <th scope="row" class="align-middle text-left" >{$i++}</th>
+          {var $id_cat = $x->id_cat}
+        <tr {if $user->isInRole('admin')} class="bg-light-green" {/if}>
+          <td scope="row" class="align-middle text-left" >{$i++}</td>
           <td class="align-middle" >{$x->first_name} {$x->last_name}</td>
           <td class="align-middle" >{$x->born}</td>
           <td class="align-middle" >{$x->club}</td>
+            {if $user->isInRole('admin')}
+          <td class="align-middle" >
+              {form compUnregistrationForm-$x->id_racer}
+                {input id_comp class=>'hidden'}
+                {input registration class=>"btn btn-warning text-dark "}
+              {/form}
+          </td>
+            {/if}
         </tr>
         {/foreach}
+        {foreach $prereg['unprereg'][$key] as $x}
+          <tr class="bg-light-red">
+            <td scope="row" class="align-middle text-left" >{$i++}</td>
+            <td class="align-middle" >{$x->first_name} {$x->last_name}</td>
+            <td class="align-middle" >{$x->born}</td>
+            <td class="align-middle" >{$x->club}</td>
+            <td class="align-middle">
+                {form compRegistrationForm-$x->id_racer}
+                  {input id_comp class=>'hidden'}
+                  {input registration class=>"btn btn-warning text-dark"}
+                {/form}
+            </td>
+          </tr>
+        {/foreach}
+      {if $user->isInRole('admin') && count($p) > 0}
+          {ifset $id_cat}
+            <tr>
+              <td colspan="5"><a n:href="startersToPdf! 'id_comp' => $id, 'id_cat' => $id_cat" class="btn btn-warning text-dark" target="_blank">generovat startovky</a> </td>
+            </tr>
+          {/ifset}
+        {/if}
       </tbody>
     </table>
     {/foreach}
   {/if}
+{/block}

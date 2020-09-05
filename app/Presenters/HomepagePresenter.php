@@ -68,25 +68,26 @@ class HomepagePresenter extends \BasePresenter {
     $userModel = $this->context->createInstance('UserModel');
     try {
       $userModel->newUser($values);
+      $mail = new Nette\Mail\Message;
+      $mailer = new Nette\Mail\SendmailMailer;
+
+      $mail->setFrom('Zbysa.Cernohous@seznam.cz')
+           ->addTo($values->email)
+           ->setSubject('Registrace do systému bozala.cz')
+           ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>Registrace do systému <a href="' . \Constants::WEB_ADDRESS . '">bozala.cz</a> proběhla úspešně!, můžete začít z registrací závodníků. Kdyby jste si neveděli rady s přihlášením závodníků, návod je <a href="' . \Constants::WEB_ADDRESS . '/#"> zde.</a></p>
+                               <p> Vaše přihlašovací jméno je:<b> ' . $values->email . '</b> <br>Vaše heslo je:<b> ' . $passwd . '</b></p>
+                               <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous[zavinac]seznam.cz</p>
+                               <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>'
+           );
+      $mailer->send($mail);
+
     } catch (\Exception $e) {
       $this->flashMessage($e->getMessage(), 'error');
       $this->redirect('this');
     }
-    $mail = new Nette\Mail\Message;
-    $mailer = new Nette\Mail\SendmailMailer;
-
-    $mail->setFrom('Zbysa.Cernohous@seznam.cz')
-         ->addTo($values->email)
-         ->setSubject('Registrace do systému bozala.cz')
-         ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>Registrace do systému <a href="'.\Constants::WEB_ADDRESS.'">bozala.cz</a> proběhla úspešně!, můžete začít z registrací závodníků. Kdyby jste si neveděli rady s přihlášením závodníků, návod je <a href="'.\Constants::WEB_ADDRESS.'/#"> zde.</a></p>
-                             <p> Vaše přihlašovací jméno je:<b> '.$values->email.'</b> <br>Vaše heslo je:<b> '.$passwd.'</b></p>
-                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous.cz</p>
-                             <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>');
-    $mailer->send($mail);
     $this->flashMessage('Byl jste úspěšně zaregistrován.');
     $this->redirect('Homepage:login');
   }
-
   public function createComponentLoginForm() {
     $form = new Form();
     $form->addEmail('email')
@@ -130,7 +131,7 @@ class HomepagePresenter extends \BasePresenter {
            ->setSubject('Obnova hesla')
            ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>V emailu vám posíláme Vaše změnené přihlašovací údaje údaje s novým heslem.</p>
                              <p> Vaše přihlašovací jméno je:<b> '.$this->user->roles['email'].'</b> <br>Vaše heslo je:<b> '.$values->passwd.'</b></p>
-                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous.cz</p>
+                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous[zavinac]seznam.cz</p>
                              <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>');
       $mailer->send($mail);
       $this->flashMessage('Změna hesla proběhla úspešně!');
@@ -162,7 +163,7 @@ class HomepagePresenter extends \BasePresenter {
            ->setSubject('Obnova hesla')
            ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>V emailu vám posíláme Vaše přihlašovací údaje s novým heslem</p>
                              <p> Vaše přihlašovací jméno je:<b> '.$values->email.'</b> <br>Vaše heslo je:<b> '.$newPasswd.'</b></p>
-                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous.cz</p>
+                             <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous[zavinac]seznam.cz</p>
                              <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>');
       $mailer->send($mail);
       $this->flashMessage('Email s novým heslem byl úspešně odeslán');

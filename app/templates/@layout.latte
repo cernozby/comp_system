@@ -6,6 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="{$basePath}/css/AdminLTE.css">
+  <link rel="icon" href="{$basePath}/images/hk_la_logo.png" >
   <!-- CSS only -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -121,71 +122,6 @@
 </span>
   </span>
   </nav>
-
-  {*<nav class="d-flex justify-content-center navbar-expand-lg navbar-light bg-warning" id="menu">
-    <ul class="navbar-nav h3 " >
-      <li class="active d-flex align-items-center logo">
-        <a class="" href="{plink :Homepage:default}">
-          <img src="{$basePath}/images/hk_la_logo.png" height="64px">
-        </a>
-      </li>
-      <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:default')}active{/if}">
-        <a class="nav-link" n:href=":Homepage:default">
-          <span class="fa fa-home"></span>
-          Domů
-        </a>
-      </li>
-      <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:article')}active{/if}">
-        <a class="nav-link" n:href=":Homepage:article">
-          <span class="fa fa-newspaper" aria-hidden="true"></span>
-          Aktuality
-        </a>
-      </li>
-      <li class="nav-item d-flex align-items-center {if isLinkCurrent('Competition:ListOfPrereg')}active{/if}">
-        <a class="nav-link" n:href=":Competition:ListOfPrereg">
-          <span class="fa fa-table"></span>
-          Předregistrace
-        </a>
-      </li>
-      <li class="nav-item d-flex align-items-center {if isLinkCurrent('Competition:results')}active{/if}">
-        <a class="nav-link" n:href=":Competition:results">
-          <span class="fa fa-trophy"></span>
-          Výsledky
-        </a>
-      </li>
-    </ul>
-    <ul class="navbar-nav h4 ml-auto">
-      {if !$user->isLoggedIn()}
-        <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:login')}active{/if}">
-          <a class="nav-link" href="{plink :Homepage:login}">
-            <span class="glyphicon glyphicon-user"></span>
-            <b>Přihlášení</b>
-          </a>
-        </li>
-        <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:registration')}active{/if}">
-          <a class="nav-link" href="{plink :Homepage:registration}">
-            <span class="glyphicon glyphicon-log-in"></span>
-            <b>Registrace</b>
-          </a>
-        </li>
-      {/if}
-      {if $user->isLoggedIn()}
-        <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:registration')}active{/if}">
-          <a class="nav-link" href="{plink :Administration:administration}">
-            <span class="nav-link fa fa-wrench"></span>
-            <b>Administrace</b>
-          </a>
-        </li>
-        <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:Out')}active{/if}">
-          <a class="nav-link" href="{plink :Homepage:Out}">
-            <span class="nav-link glyphicon glyphicon-log-out"></span>
-            <b>Odhlásit</b>
-          </a>
-        </li>
-      {/if}
-    </ul>
-  </nav>*}
-
   <article class="container bg-white margin-bottom pad">
     {include content}
   </article>

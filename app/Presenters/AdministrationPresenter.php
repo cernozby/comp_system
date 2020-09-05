@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use Mpdf\Mpdf;
 use Nette;
 use Nette\Application\UI\Form;
 
@@ -158,7 +159,7 @@ class AdministrationPresenter extends \BasePresenter {
          ->addRule(FORM::MIN_LENGTH, \Constants::FORM_SHORT_FIRSTNAME, 3)
          ->addRule(FORM::MAX_LENGTH, \Constants::FORM_LONG_FIRSTNAME, 250)
          ->setHtmlAttribute('placeholder', 'název závodu*');
-    $form->addSelect('comp_type', 'typ závodu', array('rychlost' => 'rychlost', 'obtížnost' => 'obtížnost', 'boulder' => 'boulder', 'kombinace' => 'kombinace', 'jiné' => 'jiné'))
+    $form->addSelect('comp_type', 'typ závodu', array('rychlost' => 'rychlost', 'obtížnost' => 'obtížnost', 'boulder' => 'boulder', 'monky_cup' => 'monky cup'))
          ->setPrompt('-----');
     $form->addSelect('comp_for', 'závod pro', array('děti' => 'děti', 'dospělé' => 'dospělé', 'všechny' => 'všechny'))
          ->setPrompt('-----');
@@ -220,9 +221,9 @@ class AdministrationPresenter extends \BasePresenter {
     $form->addSelect('year_to', 'do roku (nejstarší) *', $this->RacerModel->yearsForSelect())
          ->setPrompt('-')
          ->setRequired('nejstarší:' .\Constants::FORM_MSG_REQUIRED);
-    $form->addSelect('result_system', 'vyhodnocení *', array('amatérské' => 'amatérské', 'závodní' => 'závodní'))
+    $form->addSelect('result_system', 'vyhodnocení *', array('amatérské' => 'amatérské', 'závodní' => 'závodní', 'monkey_cup' => 'monky cup'))
          ->setDefaultValue('amatérské');
-    $form->addSelect('comp_type', 'typ závodu', array('obtížnost' => 'obtížnost', 'boulder' => 'boulder', 'rychlost' => 'rychlost', 'kombinace' => 'kombinace'))
+    $form->addSelect('comp_type', 'typ závodu', array('obtížnost' => 'obtížnost', 'boulder' => 'boulder', 'rychlost' => 'rychlost', 'monky_cup' => 'monky cup'))
          ->setRequired('Vyhodnocení: ' . \Constants::FORM_MSG_REQUIRED)
          ->setPrompt('-');
     $form->addSelect('bonus_first_try', 'Při shodném výsledku rozhoduje flash', array('0' => 'Ne', '1' => 'Ano'))
@@ -320,11 +321,18 @@ class AdministrationPresenter extends \BasePresenter {
   public function CompFormSucceeded(Form $form) {
     $values = $form->values;
     try {
+      $prepare_values = $this->CompModel->prepareValues($values);
       if($this->getParameter('id')){
-        $this->CompModel->update($this->CompModel->prepareValues($values));
+        $this->CompModel->update($prepare_values);
+        if($values['comp_type'] == 'monky_cup') {
+          $this->CatModel->prepareCategoriesForMonkeyCup($this->getParameter('id'));
+        }
         $this->flashMessage('Závod byl úspěšně upraven.');
       } else {
-        $this->CompModel->insert($this->CompModel->prepareValues($values));
+        $a = $this->CompModel->insert($prepare_values);
+        if($values['comp_type'] == 'monky_cup') {
+          $this->CatModel->prepareCategoriesForMonkeyCup($a->id_comp);
+        }
         $this->flashMessage('Závod byl úspěšně uložen.');
       }
     } catch (\Exception $e) {
@@ -349,7 +357,4 @@ class AdministrationPresenter extends \BasePresenter {
     }
     $this->redirect('Administration:compSetting', array('id' => $values->comp_id));
   }
-  /*------------Handlers--------------*/
-
-
 }

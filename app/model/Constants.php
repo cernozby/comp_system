@@ -16,7 +16,8 @@ class Constants
     FORM_BORN_RANGE = 'Rok narození musí být mezi %d a %d! ';
 
   const
-    WEB_ADDRESS = 'http://bozala.loc';
+    WEB_ADDRESS = 'http://bozala.loc',
+    PATH_TO_PRINT_CSS = 'C:\xampp\htdocs\comp_system\app\pdf';
   const NO_CZECH_CHAR = Array(
   'ä'=>'a',
   'Ä'=>'A',

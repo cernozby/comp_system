@@ -19,6 +19,7 @@ final class RouterFactory
 		$router->addRoute('registrace', 'Homepage:registration');
 		$router->addRoute('login', 'Homepage:login');
 		$router->addRoute('zapomenute-heslo', 'Homepage:forgetPasswd');
+		$router->addRoute('nove-heslo', 'Homepage:newPasswd');
 		$router->addRoute('zmena-hesla', 'Homepage:changePasswd');
 		$router->addRoute('administrace', 'Administration:administration');
 		$router->addRoute('administrace/novy-zavodnik[/<id>]', 'Administration:newRacer');

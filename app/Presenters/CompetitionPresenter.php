@@ -2,9 +2,11 @@
 
 namespace App\Presenters;
 
+use Mpdf\Mpdf;
 use Nette;
 use Nette\Application\UI\Form;
 use Nette\ComponentModel\IComponent;
+use Nette\Utils\Html;
 
 class CompetitionPresenter extends \BasePresenter
 {
@@ -12,6 +14,7 @@ class CompetitionPresenter extends \BasePresenter
   public $CompModel;
   public $CatModel;
   public $ResultModel;
+  public $PdfModel;
   public $httpRequest;
 
   public $table;
@@ -26,14 +29,35 @@ class CompetitionPresenter extends \BasePresenter
     $this->CatModel = $this->context->createInstance('CatModel');
     $this->CatModel->initId_user($this->user->getId());
     $this->ResultModel = $this->context->createInstance('ResultModel');
+    $this->PdfModel = $this->context->createInstance('PdfModel');
     $this->httpRequest = $this->getHttpRequest();
 
   }
 
+  /*  --------------Handlers---------------*/
+
+  //dodelat generovani pdf
+  public function handleResultToPDf($id_comp, $id_cat) {
+    $html = $this->PdfModel->getResultToPrint($id_comp, $id_cat);
+    $stylesheet = file_get_contents(\Constants::PATH_TO_PRINT_CSS.'\result.css');
+    $mpdf = new Mpdf(['orientation' => 'L', 'mode' => 'utf-8', 'margin_top' => 5]);
+    $mpdf->WriteHTML($stylesheet, 1);
+    $mpdf->WriteHTML($html);
+    $mpdf->output();
+  }
+
+  public function HandleStartersToPdf($id_comp, $id_cat) {
+    $html = $this->PdfModel->getStartersToPrint($id_comp, $id_cat);
+    $stylesheet = file_get_contents(\Constants::PATH_TO_PRINT_CSS.'\starters.css');
+    $mpdf = new Mpdf(['orientation' => 'P', 'mode' => 'utf-8', 'margin_top' => 5]);
+    $mpdf->WriteHTML($stylesheet, 1);
+    $mpdf->WriteHTML($html);
+    $mpdf->output();
+  }
   /*  --------------Renders---------------*/
 
   public function renderListOfPrereg(){
-    $tmp = $this->CompModel->getCompForRegister(null, true);
+    $tmp = $this->CompModel->getCompForRegister(null, $this->user->isInRole('admin'));
     $id = $this->getParameter('id');
     $this->template->id = $id;
     if(count($tmp) == 1 && $id == null) {
@@ -42,7 +66,7 @@ class CompetitionPresenter extends \BasePresenter
       $this->template->CompPrereg = $tmp;
     }
     if($id) {
-      $this->template->prereg = $this->CompModel->getPreregComp($id);
+      $this->template->prereg = $this->CompModel->getPreregComp($id, $this->user->isInRole('admin'));
     }
   }
 
@@ -55,7 +79,7 @@ class CompetitionPresenter extends \BasePresenter
     $this->template->id_cat = $cat;
 
     if($id && !$cat) {
-      $this->template->cat = $this->CatModel->getCatPublicResult($id);
+      $this->template->cat = $this->user->isInRole('admin') ? $this->CatModel->getCatIfTableExist($id) : $this->CatModel->getCatPublicResult($id);
     }
 
     if($id && $cat) {
@@ -117,7 +141,7 @@ class CompetitionPresenter extends \BasePresenter
                 ->setDefaultValue($d->id_result);
         foreach ($names as $n) {
           $sub[$i]->addText($n)
-                  ->setHtmlAttribute('maxlength', 3);
+                  ->setHtmlAttribute('maxlength', 7);
           $sub[$i]->setDefaults($d);
         }
         $i++;
@@ -127,17 +151,51 @@ class CompetitionPresenter extends \BasePresenter
     return $form;
   }
 
+  public function createComponentCompRegistrationForm() {
+    return new Nette\Application\UI\Multiplier(function () {
+      $form = new Form();
+      $form->addText('id_comp')
+           ->setDefaultValue($this->getParameter('id'));
+      $form->addSubmit('registration', 'předregistrovat');
+      $form->onSuccess[] = [$this, 'CompRegistrationFormSucceeded'];
+      return $form;
+    }
+    );
+  }
+
+  public function createComponentCompUnregistrationForm() {
+    return new Nette\Application\UI\Multiplier( function (){
+      $form = new Form();
+      $form->addText('id_comp')
+           ->setDefaultValue($this->getParameter('id'));
+      $form->addSubmit('registration', 'odhlásit');
+      $form->onSuccess[] = [$this, 'CompUnregistrationFormSucceeded'];
+      return $form;
+    });
+  }
+
+  public function CompRegistrationFormSucceeded(Form $form) {
+    $values = $form->values;
+    $this->RacerModel->insert(array('comp_id' => $values->id_comp, 'racer_id' => $form->getName()), 'prereg');
+    $this->flashMessage('Závodník byl úspěšně přihlášen na závod.');
+    $this->redirect('Competition:ListOfPrereg', array('id' => $values->id_comp));
+  }
+  public function CompUnregistrationFormSucceeded(Form $form) {
+    $values = $form->values;
+    $id = $this->CompModel->isPrereg($form->getName(), $values->id_comp);
+    $this->RacerModel->delete('prereg', $id);
+    $this->flashMessage('Závodník byl úspěšně odhlášen ze závodu.');
+    $this->redirect('Competition:ListOfPrereg', array('id' => $values->id_comp));
+  }
+
   public function ResultFormSucceeded(Form $form) {
     $table = $this->ResultModel->generateTableName($this->getParameter('id'), $this->getParameter('cat'));
     $data = $form->getHttpData();
-
-
     $this->CatModel->update(array('public_result' => (bool)$data['public']), $this->getParameter('cat'), false, 'category');
 
     unset($data['save']);
     unset($data['_do']);
     unset($data['public']);
-
 
     try {
       foreach ($data as $d) {
