@@ -15,10 +15,12 @@ class CompModel extends BaseModel {
    * @param \Nette\Database\Context $database
    * @param \Nette\DI\Container $container
    */
+
   public function __construct(Nette\Database\Context $database, Nette\DI\Container $container) {
     parent::__construct($database, $container);
     $this->table = 'comp';
   }
+
 
   public function getCountMyComp() {
     return $this->db->table($this->table)
@@ -156,21 +158,43 @@ class CompModel extends BaseModel {
                     ->fetchAll();
   }
 
-  public function getPreregComp($id_comp) {
+  public function getUnpreregRacers($id_comp) {
+    return $this->db->query('SELECT r.* FROM racer r WHERE r.id_racer NOT IN (SELECT p.racer_id FROM prereg p WHERE comp_id = ?)', $id_comp)->fetchAll();
+  }
+
+  public function getPreregComp($id_comp, $admin = false) {
     $prereg = $this->getPreregByIdComp($id_comp);
     $category = $this->getCatByIdComp($id_comp);
-
+    $preregCompetitors = array();
+    $unpreregCompetitors = array();
     $result = array();
     foreach ($category as $c) {
-      $result[$c->name .' '. $c->year_from .' - '. $c->year_to] = array();
+      $preregCompetitors[$c->name .' '. $c->year_from .' - '. $c->year_to] = array();
+      $unpreregCompetitors[$c->name .' '. $c->year_from .' - '. $c->year_to] = array();
     }
 
     foreach ($prereg as $p) {
       foreach ($category as $c) {
-        if($p->born <= $c->year_from && $p->born >= $c->year_to && ( ($p->gender == 'male' && $c->gender == 'muž') || ($p->gender == 'female' &&  $c->gender == 'žena') || $c->gender == 'muž i žena'))
-          $result[$c->name .' '. $c->year_from .' - '. $c->year_to][] = $p;
+        if($p->born <= $c->year_from && $p->born >= $c->year_to && ( ($p->gender == 'male' && $c->gender == 'muž')
+            || ($p->gender == 'female' &&  $c->gender == 'žena') || $c->gender == 'muž i žena')) {
+          $p->offsetSet('id_cat', $c->id_category );
+          $preregCompetitors[$c->name .' '. $c->year_from .' - '. $c->year_to][] = $p;
+        }
       }
     }
+    if($admin) {
+      $unprereg = $this->getUnpreregRacers($id_comp);
+      foreach ($unprereg as $p) {
+        foreach ($category as $c) {
+          if($p->born <= $c->year_from && $p->born >= $c->year_to && ( ($p->gender == 'male' && $c->gender == 'muž') || ($p->gender == 'female' &&  $c->gender == 'žena') || $c->gender == 'muž i žena')) {
+            $p->offsetSet('id_cat', $c->id_category );
+            $unpreregCompetitors[$c->name . ' ' . $c->year_from . ' - ' . $c->year_to][] = $p;
+          }
+        }
+      }
+    }
+    $result['prereg'] = $preregCompetitors;
+    $result['unprereg'] = $unpreregCompetitors;
     return $result;
   }
   public function getOpenComps() {
@@ -185,7 +209,7 @@ class CompModel extends BaseModel {
     $result = array();
     foreach ($prereg as $p) {
       if($p->born <= $category->year_from && $p->born >= $category->year_to && ( ($p->gender == 'male' && $category->gender == 'muž') || ($p->gender == 'female' &&  $category->gender == 'žena') || $category->gender == 'muž i žena')) {
-        $result[]['racer_id'] = $p->id_racer;
+        $result[] = $p;
       }
     }
     return $result;

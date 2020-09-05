@@ -3,7 +3,14 @@
  * ----------
  */
 .bg-light-green {
-  background-color: rgba(11, 255, 0, 0.7);
+  background-color: rgba(60, 255, 0, 0.7);
+}
+.bg-light-red {
+  background-color: rgba(255, 0, 0, 0.7) !important;
+}
+a.bg-light-red:hover,
+a.bg-light-red:focus {
+  background-color: rgba(204, 0, 0, 0.7) !important;
 }
 .skin-black .main-header .navbar {
   background-color: #212121;

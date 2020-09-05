@@ -31,49 +31,63 @@
 {elseif $id_comp && $id_cat}
   <div class="table-responsive">
     <table class="table table-hover result-table">
+      <colgroup>
+        <col style="width:40%">
+        <col style="width:30%">
+        <col style="width:30%">
+      </colgroup>
       <thead class="bg-warning border">
       <tr>
         <th colspan="100%" class="text-center">{$cat_name}</th>
       </tr>
       <tr>
+        <th class="text-center"> pořadí</th>
         <th class="text-center">jméno</th>
         <th class="text-center ">ročník</th>
         <th class="text-center">oddíl</th>
         {foreach $results as $h}
           {var $a = array_keys($h)}
           {foreach $a as $name}
-              {if $name != 'racer_id' && !$iterator->isLast() }
-                <th class="text-center">{$name}</th>
+              {if $name != 'racer_id' && $name !=result && !$iterator->isLast()  }
+                {if $name != 'place'}
+                  <th class="text-center">{$name}</th>
+                {/if}
               {/if}
           {/foreach}
-          <th class="center"> pořadí</th>
+          <th class="text-center"> celkem </th>
           {breakIf $iterator->isFirst()}
         {/foreach}
       </tr>
       </thead>
-      <tbody class="table-bordered">
+      <tbody class="table-bordered" id="tbody">
 
         {foreach $results as $array}
         <tr>
-          {foreach $array as $key => $item}
+          {foreach $array as $k => $item}
             {if $iterator->isFirst()}
               {var $racer = $racerModel->getRow('racer', $item)}
-              <th class="text-center"> {$racer->first_name}&nbsp;{$racer->last_name} </th>
+              <th class="text-center bg-warning">{$array['place']}.</th>
+              <th>{$racer->first_name}&nbsp;{$racer->last_name}</th>
               <th class="text-center"> {$racer->born} </th>
-              <th class="text-center">
+              <th>
                 {foreach explode(' ', $racer->club) as  $word}{$word}&nbsp;{/foreach}
               </th>
             {elseif $iterator->isLast()}
               <th class="text-center bg-warning">{if $item == 0} X {else} {$item} {/if}</th>
-
-            {else}
-              <th class="text-center">{if $item == 0} X {else} {$item} {/if}</th>
+            {elseif $k[0] == 'Q' }
+              <th class="text-center bg-warning">{if $item == 0} X {else} {$item} {/if}</th>
+            {elseif $k == celkem}
+              <th>
+                {foreach explode(' ', $item) as  $i}{$i}&nbsp;{/foreach}
+              </th>
+            {elseif $k != 'place'}
+              <th class="text-center">{$item}</th>
             {/if}
           {/foreach}
-
         </tr>
       {/foreach}
       </tbody>
     </table>
+    <p><a n:href="resultToPDf! 'id_comp' => $id_comp, 'id_cat' => $id_cat" target="_blank">Tisk</a></p>
   </div>
 {/if}

@@ -22,7 +22,14 @@ class UserModel extends BaseModel {
 
     $this->emailExist($data['email']);
     $data['passwd'] = \Model\Passwords::hash($data['passwd']);
-    $this->db->table($this->table)->insert($data);
+    $this->db->table($this->table)
+             ->insert($data);
+  }
+
+  public function changePasswd($email, $passwd) {
+    $this->db->table($this->table)
+             ->where('email = ?', $email)
+             ->update(['passwd' => \Model\Passwords::hash($passwd)]);
   }
 
   /**
@@ -30,8 +37,21 @@ class UserModel extends BaseModel {
    * @throws Exception
    */
   public function emailExist($email) {
-    if ($this->db->table($this->table)->where('email = ?', $email)->fetch()) {
+    if ($this->db->table($this->table)
+                 ->where('email = ?', $email)
+                 ->fetch()) {
       throw new Exception("Zadaný email je již někým používán, zvojte prosím jiný.");
     }
+  }
+
+  public function getAllMails() {
+    $emails = array();
+    $result = $this->db->table($this->table)
+                       ->select('email')
+                       ->fetchAll();
+    foreach ($result as $r) {
+      $emails[] = $r->email;
+    }
+    return $emails;
   }
 }

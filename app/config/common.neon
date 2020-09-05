@@ -16,6 +16,8 @@ services:
         class: BaseModel
     CompModel:
         class: CompModel
+    CatModel:
+            class: CatModel
     RacerModel:
         class: RacerModel
     ResultModel:

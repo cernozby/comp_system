@@ -62,9 +62,11 @@ class BaseModel {
   public function insert($values, $table = null){
 
       $table = $table ? $table : $this->table;
-      if(!$this->db->table($table)->insert($values)) {
+      $a = $this->db->table($table)->insert($values);
+      if(!$a) {
         throw new Exception("Vložení dat do db se nepovedlo");
       }
+      return $a;
     }
 
   /**
