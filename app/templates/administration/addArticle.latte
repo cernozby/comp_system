@@ -9,6 +9,9 @@
   {label keywords/}
   {input keywords class => "form-control"}
   <br>
+  {label text_short/}
+  {input text_short class => "form-control"}
+  <br>
   {label text/}
   {input text class => "form-control"}
   <br>
@@ -16,6 +19,20 @@
 {/form}
 
 <script type="text/javascript" src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea[name=text_short]",
+        plugins: [
+            "advlist autolink lists link image charmap print preview anchor",
+            "searchreplace visualblocks code fullscreen",
+            "insertdatetime media table contextmenu paste"
+        ],
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+        entities: "160,nbsp",
+        entity_encoding: "named",
+        entity_encoding: "raw"
+    });
+</script>
 <script type="text/javascript">
     tinymce.init({
         selector: "textarea[name=text]",

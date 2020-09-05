@@ -6,7 +6,7 @@
       <h2 class="d-flex justify-content-center">{$article->title|noescape|upper}</h2>
           {$article->text|noescape}
      <br>
-     <br>s
+     <br>
      <small class="article-date text-bold"> {$article->created|date:'%d. %m. %Y'}</small>
      <small class="pull-right article-name text-bold">{$user->first_name} {$user->last_name}</small>
     </span>
@@ -18,7 +18,7 @@
       <h3><a href="{plink Homepage:Article 'url' => $item->url}"
              class="text-warning nav-link">{$item->title|noescape|upper}</a></h3>
       <div class="article-text">
-        {$item->text|noescape|truncate:1000}
+        {$item->text_short|noescape}
       </div>
       {var $user = $userModel->getRow('user', $item->user_id)}
        <span class="row d-flex justify-content-center">

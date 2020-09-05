@@ -3293,6 +3293,32 @@ table.text-center th {
 .post .user-block {
   margin-bottom: 15px;
 }
+.frontPage {
+  background: url("/images/front.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  height: 100%;
+}
+.frontPage article {
+  background: inherit !important;
+}
+.frontPage article .text {
+  font-size: 35px;
+  font-family: Optima;
+  position: relative;
+  color: #ffc107;
+  font-weight: bolder;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: black;
+}
+.frontPage article .text .name {
+  font-size: 50px;
+  letter-spacing: 3px;
+}
 /*
  * Social Buttons for Bootstrap
  *

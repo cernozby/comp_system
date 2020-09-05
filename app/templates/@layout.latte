@@ -27,7 +27,7 @@
   <title>{ifset title}{include title|stripHtml} | {/ifset}BOZALA - Bouldrové závody v Lanškrouně</title>
 </head>
 <div id="content">
-  <body class="bg-gray-light">
+  <body {if !isLinkCurrent('Homepage:default')}class="bg-gray-light"{else} class="frontPage" {/if}} >
   <div n:foreach="$flashes as $flash">
     <div class="container">
       <!-- Trigger the modal with a button -->

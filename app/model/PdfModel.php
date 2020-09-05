@@ -76,7 +76,7 @@ class PdfModel extends BaseModel {
     $cat_name = $this->CatModel->createCatName($id_cat);
     $base = Html::el('null');
     $base->addHtml($this->addLogosTable());
-    $base->addHtml($this->addCompNameAndType($id_comp,'starotovní listina'));
+    $base->addHtml($this->addCompNameAndType($id_comp,'startovní listina'));
 
     //set table head
     $table = Html::el('table width="100%"')->class('result');

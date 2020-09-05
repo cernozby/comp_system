@@ -19,7 +19,7 @@
 
     {foreach $prereg['prereg'] as $key => $p}
       {var $i = 1}
-    <table class="table table-hover border text-center">
+    <table class="table table-hover border text-center table-responsive">
       <thead class="bg-warning">
       <tr style="border-bottom: 3px solid black !important;">
         <th colspan="100%" class="text-left">{$key|upper:} </th>
@@ -39,9 +39,10 @@
           {var $id_cat = $x->id_cat}
         <tr {if $user->isInRole('admin')} class="bg-light-green" {/if}>
           <td scope="row" class="align-middle text-left" >{$i++}</td>
-          <td class="align-middle" >{$x->first_name} {$x->last_name}</td>
+          <td class="align-middle" >{$x->first_name}&nbsp{$x->last_name}</td>
           <td class="align-middle" >{$x->born}</td>
-          <td class="align-middle" >{$x->club}</td>
+          <td class="align-middle" >{foreach explode(' ', $x->club) as  $word}{$word}&nbsp;{/foreach}
+          </td>
             {if $user->isInRole('admin')}
           <td class="align-middle" >
               {form compUnregistrationForm-$x->id_racer}

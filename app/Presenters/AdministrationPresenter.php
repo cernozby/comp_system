@@ -140,6 +140,8 @@ class AdministrationPresenter extends \BasePresenter {
     $form->addText('keywords', 'Kličová slova');
     $form->addTextArea('text', 'Článek')
          ->setRequired();
+    $form->addTextArea('text_short', 'Vícuc článku ')
+         ->setRequired();
 
     $form->addSubmit('add', 'vložit');
     $form->onSuccess[] = [$this, 'ArticleFormSucceeded'];
