@@ -4,10 +4,6 @@
 class BaseModel {
   use Nette\SmartObject;
 
-
-  public $baseUrl = 'http://bozala.loc/';
-  public $basePath = 'C:/xampp/htdocs/comp_system/www/';
-
   /**
    * @var
    */
@@ -128,7 +124,7 @@ class BaseModel {
 
 
   public function getInputDatetime($timestamp) {
-    return date("Y-m-d\TH:i", $timestamp);
+    return date("Y-m-d\T:H:i", $timestamp);
 
   }
 }

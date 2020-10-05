@@ -3294,26 +3294,25 @@ table.text-center th {
   margin-bottom: 15px;
 }
 .frontPage {
-  background: url("/images/front.jpg");
+  background: url("/images/front1.jpg");
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: top center;
   background-size: cover;
   background-attachment: fixed;
   -moz-background-size: cover;
   -webkit-background-size: cover;
-  height: 100%;
 }
 .frontPage article {
-  background: inherit !important;
+  border-radius: 20px;
+  background: rgba(238, 238, 238, 0.5) !important;
+  width: 100%;
 }
 .frontPage article .text {
+  text-align: center;
   font-size: 35px;
   font-family: Optima;
-  position: relative;
-  color: #ffc107;
-  font-weight: bolder;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;
+  color: black;
+  font-weight: 400;
 }
 .frontPage article .text .name {
   font-size: 50px;

@@ -24,6 +24,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
   <title>{ifset title}{include title|stripHtml} | {/ifset}BOZALA - Bouldrové závody v Lanškrouně</title>
 </head>
 <div id="content">
@@ -77,8 +79,8 @@
           Aktuality
         </a>
       </li>
-      <li class="nav-item d-flex align-items-center {if isLinkCurrent('Competition:ListOfPrereg')}active{/if}">
-        <a class="nav-link" n:href=":Competition:ListOfPrereg">
+      <li class="nav-item d-flex align-items-center {if isLinkCurrent('Competition:listOfPrereg')}active{/if}">
+        <a class="nav-link" n:href=":Competition:listOfPrereg">
           <span class="fa fa-table"></span>
           Předregistrace
         </a>
@@ -104,7 +106,7 @@
         </li>
       {/if}
 		{if $user->isLoggedIn()}
-        <li class="nav-item d-flex align-items-center {if isLinkCurrent('Homepage:registration')}active{/if}">
+        <li class="nav-item d-flex align-items-center {if isLinkCurrent('Administration:administration')}active{/if}">
           <a class="nav-link" href="{plink :Administration:administration}">
             <span class="nav-link fa fa-wrench"></span>
             <b>Administrace</b>

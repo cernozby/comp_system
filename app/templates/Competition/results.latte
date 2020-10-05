@@ -41,7 +41,7 @@
         <th colspan="100%" class="text-center">{$cat_name}</th>
       </tr>
       <tr>
-        <th class="text-center"> pořadí</th>
+        <th class="text-center">pořadí</th>
         <th class="text-center">jméno</th>
         <th class="text-center ">ročník</th>
         <th class="text-center">oddíl</th>
@@ -70,7 +70,7 @@
               <th>{$racer->first_name}&nbsp;{$racer->last_name}</th>
               <th class="text-center"> {$racer->born} </th>
               <th>
-                {foreach explode(' ', $racer->club) as  $word}{$word}&nbsp;{/foreach}
+                {foreach explode(' ', $racer->club) as $word}{$word}&nbsp;{/foreach}
               </th>
             {elseif $iterator->isLast()}
               <th class="text-center bg-warning">{if $item == 0} X {else} {$item} {/if}</th>
@@ -88,6 +88,10 @@
       {/foreach}
       </tbody>
     </table>
-    <p><a n:href="resultToPDf! 'id_comp' => $id_comp, 'id_cat' => $id_cat" target="_blank">Tisk</a></p>
   </div>
+  <br>
+  {if $user->isInRole('admin')}
+  <p><a class="btn btn-warning col-lg-3 col-md-3 col-xs-3 col-sm-3 " n:href="resultToPDf! 'id_comp' => $id_comp, 'id_cat' => $id_cat" target="_blank">Tisk</a></p>
+  {/if}
+
 {/if}

@@ -4,9 +4,23 @@ umask(0000);
 require __DIR__ . '/../vendor/autoload.php';
 
 $configurator = new Nette\Configurator;
-$section = 'local';
 
+if($_SERVER['HTTP_HOST'] == 'bozala.cz') {
+  $section = 'sharp';
+} else {
+  $section = 'local';
+}
+
+if($section == 'sharp') {
+  $configurator->setDebugMode(true);
+  $configurator->addConfig(__DIR__ . '/config/sharp.neon');
+
+
+} else {
   $configurator->setDebugMode(Tracy\Debugger::detectDebugMode());
+  $configurator->addConfig(__DIR__ . '/config/local.neon');
+
+}
 
 $configurator->enableDebugger(__DIR__ . '/../log');
 
@@ -24,7 +38,6 @@ $configurator->createRobotLoader()
   ->register();
 
 $configurator->addConfig(__DIR__ . '/config/common.neon');
-$configurator->addConfig(__DIR__ . '/config/local.neon');
 
 $container = $configurator->createContainer();
 

@@ -133,11 +133,11 @@ class ResultModel extends BaseModel {
 
       $array = $this->codeResultLeadtoFlot($result);
       $array = $this->codeResultSpeedtoFlot($array);
+
       $array = $this->monkyCupResultBasicSet($array);
       $array = $this->setBestSpeedResult($array);
       $array = $this->getPlaceSpeed($array);
       $array = $this->getPlaceLead($array,$id_cat);
-
       $array = $this->getPlaceBoulder($array);
       $array = $this->getFinalyPlace($array);
       $array = $this->decodeResultLeadtoFlot($array);
@@ -171,7 +171,7 @@ class ResultModel extends BaseModel {
         if (count($before_keys) > 1) {
           $i += count($before_keys);
           foreach ($before_keys as $bk) {
-            $result[$bk]['place'] = ($i - count($before_keys)) . '. - ' . ($i - 1);
+            $result[$bk]['place'] = ($i - count($before_keys)) . '.-' . ($i - 1);
           }
           $before_keys = array();
           $before_keys[0] = $key;
@@ -188,7 +188,7 @@ class ResultModel extends BaseModel {
     if (count($before_keys) > 1) {
       $i += count($before_keys);
       foreach ($before_keys as $bk) {
-        $result[$bk]['place'] = ($i - count($before_keys)) . '. - ' . ($i - 1);
+        $result[$bk]['place'] = ($i - count($before_keys)) . '.-' . ($i - 1);
       }
     }
     return $result;
@@ -232,8 +232,16 @@ class ResultModel extends BaseModel {
     $result = $this->addPlace($result, self::COMP_RESULT_SYSTEM);
 
     foreach ($result as $key => $a) {
-      //nefunuje pri samich nulach
-      $result[$key]['Q1'] = (substr($result[$key]['place'], 0, 1) + substr($result[$key]['place'], -1, 1)) / 2;
+      bdump(substr($result[$key]['place'], 0, 1));
+      bdump(substr($result[$key]['place'], -2, 2));
+      bdump(strlen($result[$key]['place']));
+      if ( strlen($result[$key]['place']) == 6) {
+        $result[$key]['Q1'] = (substr($result[$key]['place'], 0, 1) + substr($result[$key]['place'], -2, 2)) / 2;
+      } elseif ( strlen($result[$key]['place']) == 7) {
+        $result[$key]['Q1'] = (substr($result[$key]['place'], 0, 2) + substr($result[$key]['place'], -2, 2)) / 2;
+      } else {
+        $result[$key]['Q1'] = (substr($result[$key]['place'], 0, 1) + substr($result[$key]['place'], -1, 1)) / 2;
+      }
       $keys = array_keys($result[$key]);
       $insertBefore = array_search('Q1', $keys);
       $value = array_values($result[$key]);
@@ -387,6 +395,7 @@ class ResultModel extends BaseModel {
         if ($before_result['T'] == $item['T'] && $before_result['PT'] == $item['PT'] && $before_result['Z'] == $item['Z'] && $before_result['PZ'] == $item['PZ']) {
           $before_keys[] = $key;
           $before_result = $item;
+  
         } else {
           if (count($before_keys) > 1) {
             $i += count($before_keys);
@@ -405,10 +414,11 @@ class ResultModel extends BaseModel {
           }
         }
       }
+      
       if (count($before_keys) > 1) {
         $i += count($before_keys);
         foreach ($before_keys as $bk) {
-          $array[$bk]['place'] = ($i - count($before_keys)) . '. - ' . ($i - 1);
+          $array[$bk]['place'] = ($i - count($before_keys)) . '. -' . ($i - 1);
         }
       }
     }
@@ -417,10 +427,16 @@ class ResultModel extends BaseModel {
 
 
   public function createTable($id_comp, $id_cat) {
+
+    if($_SERVER['HTTP_HOST'] == 'bozala.cz') {
+      $db = 'bozalacz2';
+    } else {
+      $db = 'comp_system';
+    }
     $cat = $this->getRow('category', $id_cat);
     $name = $this->generateTableName($id_comp, $id_cat);
     $sql = '';
-    $sql .= 'CREATE TABLE IF NOT EXISTS `comp_system`.`' . $name . '` ( `id_result` INT(10) NOT NULL AUTO_INCREMENT , `racer_id` INT(10) NOT NULL ,';
+    $sql .= 'CREATE TABLE IF NOT EXISTS `' .$db. '`.`' . $name . '` ( `id_result` INT(10) NOT NULL AUTO_INCREMENT , `racer_id` INT(10) NOT NULL ,';
     if ($cat->comp_type == "boulder") {
       for ($i = 1; $i <= $cat->boulder_count; $i++) {
         $sql .= '`b' . $i . 'z` VARCHAR(10),';
@@ -448,7 +464,7 @@ class ResultModel extends BaseModel {
     if (!$this->tableExist($id_cat)) {
       $this->createTable($id_comp, $id_cat);
       $this->fillResultTable($id_comp, $id_cat);
-      $this->update(array('table_exist' => true), $id_cat, null, 'category');
+      $this->update(array('table_exist' => 1), $id_cat, null, 'category');
     } else {
       $this->actualizedTable($id_comp, $id_cat);
     }
@@ -490,7 +506,7 @@ class ResultModel extends BaseModel {
       $name = $this->generateTableName($id_comp, $id_cat);
       foreach ($racer as $r) {
         $this->db->table($name)
-                 ->insert($r->id_racer);
+                 ->insert(array( 'racer_id' => $r->id_racer));
       }
     }
   }

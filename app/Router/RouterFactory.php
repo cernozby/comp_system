@@ -30,7 +30,7 @@ final class RouterFactory
         $router->addRoute('administrace/moje-zavody', 'Administration:myComps');
         $router->addRoute('administrace/zavod-nastaveni/<id>[/<cat>]', 'Administration:compSetting');
         $router->addRoute('administrace/predregistrace/<id>', 'Administration:preRegistration');
-        $router->addRoute('zavod/seznam-prihlasenych[/<id>]', 'Competition:ListOfPrereg');
+        $router->addRoute('zavod/seznam-prihlasenych[/<id>]', 'Competition:listOfPrereg');
         $router->addRoute('zadani-vysledku[/<id>][/<cat>]', 'Competition:noteResults');
         $router->addRoute('vysledky[/<id>][/<cat>]', 'Competition:results');
         $router->addRoute('aktuality[/<url>]', 'Homepage:article');

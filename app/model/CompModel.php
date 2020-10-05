@@ -57,20 +57,23 @@ class CompModel extends BaseModel {
     }
   }
 
-  public function getCompForRegister($id_racer = null, $admin = false){
-    if($admin) {
+  public function getCompForRegister($id_racer = null, $admin = false, $forView = false ){
+    if ($admin && !$forView) {
       $result = $this->db->table('comp')
-                         ->where('online_registration_start < ?', new \Nette\Utils\DateTime())
                          ->order('start')
                          ->fetchAll();
+    } elseif ($forView) {
+      $result = $this->db->table('comp')
+        ->where('preregistration_visible = 1')
+        ->order('start')
+        ->fetchAll();
     } else {
       $result = $this->db->table('comp')
-                         ->where('online_registration_start < ?', new \Nette\Utils\DateTime())
-                         ->where('online_registration_end > ?', new \Nette\Utils\DateTime())
+                         ->where('preregistration_open = ?', 1)
                          ->order('start')
                          ->fetchAll();
     }
-    if($id_racer) {
+    if ($id_racer) {
       $a = null;
       $racer = $this->getRow('racer', $id_racer);
       foreach ($result as $key => $r) {
@@ -119,8 +122,8 @@ class CompModel extends BaseModel {
 
     if($values['plan_url']->isOk()) {
       $name = str_replace(' ', '_', $values->name) . '_propozice.pdf';
-      $values['plan_url']->move($this->basePath.'pdf/'.$name);
-      $values['plan_url'] = $this->baseUrl .'pdf/'. $name;
+      $values['plan_url']->move(__DIR__.'/../../www/pdf/'.$name);
+      $values['plan_url'] = 'http://'. $_SERVER['HTTP_HOST'] .'/pdf/'. $name;
     } else {
       unset($values['plan_url']);
     }

@@ -1,0 +1,6 @@
+database:
+    dsn: 'mysql:host=127.0.0.1;dbname=bozalacz2' # Typ, adresa a název databáze
+    user: 'bozala.cz'     # Uživatelské jméno
+    password: 'xolBv44po' # Heslo
+    options:
+        lazy: yes

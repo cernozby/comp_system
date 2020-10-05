@@ -14,15 +14,25 @@
         {/foreach}
         </p>
       </div>
+      {if !$CompPrereg}
+        <h2>Není dostupná předregistrace žádného závodu.</h2>
+      {/if}
     </div>
   {else}
+    <div class="text-center">
+    {var $count = 0;}
+    {foreach $prereg['prereg'] as $key => $p}
+      {var $count = $count + count($p)}
+    {/foreach}
+    <h3>Celkový počet předregistrovaných závodníků: <span class="{if $count < 110}text-success{elseif $count < 120} text-warning {else} text-danger{/if}">{$count}</span></h3>
+    </div>
 
     {foreach $prereg['prereg'] as $key => $p}
       {var $i = 1}
-    <table class="table table-hover border text-center table-responsive">
+    <table class="table table-hover border text-center">
       <thead class="bg-warning">
       <tr style="border-bottom: 3px solid black !important;">
-        <th colspan="100%" class="text-left">{$key|upper:} </th>
+        <th colspan="100%" class="text-left">{$key|upper} </th>
       </tr>
       <tr >
         <th scope="col" class="text-left" >#</th>
@@ -70,7 +80,7 @@
       {if $user->isInRole('admin') && count($p) > 0}
           {ifset $id_cat}
             <tr>
-              <td colspan="5"><a n:href="startersToPdf! 'id_comp' => $id, 'id_cat' => $id_cat" class="btn btn-warning text-dark" target="_blank">generovat startovky</a> </td>
+              <td class="align-middle" colspan="5"><a n:href="startersToPdf! 'id_comp' => $id, 'id_cat' => $id_cat" class="btn btn-warning text-dark" target="_blank">generovat startovky</a> <a n:href="noteResultPdf! 'id_comp' => $id, 'id_cat' => $id_cat" class="btn btn-warning text-dark" target="_blank">generovat zapisovací listiny</a> </td>
             </tr>
           {/ifset}
         {/if}

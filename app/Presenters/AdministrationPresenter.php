@@ -250,10 +250,16 @@ class AdministrationPresenter extends \BasePresenter {
     $form = new Form();
     $form->addSelect('open_result', 'povolit zadávání výsledků', array(1 => 'ano', 0 => 'ne'))
          ->setDefaultValue(0);
+    $form->addSelect('preregistration_open', 'povolit předregistraci', array(1 => 'ano', 0 => 'ne'))
+      ->setDefaultValue(0);
+    $form->addSelect('preregistration_visible', 'přístupná předregistrace', array(1 => 'ano', 0 => 'ne'))
+      ->setDefaultValue(0);
+    $form->addSelect('comp_edit', 'možnost editovat závod', array(1 => 'ano', 0 => 'ne'))
+      ->setDefaultValue(0);
     $form->addSubmit('send', 'nastavit');
 
     $form->setDefaults($this->CompModel->getRow(null, $this->getParameter('id')));
-    $form->onSuccess[] = [$this, 'SettingCompFormSucceeded'];
+    $form->onSubmit[] = [$this, 'SettingCompFormSucceeded'];
     return $form;
   }
 
@@ -278,6 +284,8 @@ class AdministrationPresenter extends \BasePresenter {
   }
   public function SettingCompFormSucceeded(Form $form) {
     $values = $form->values;
+    bdump($values);
+
     try {
       $this->CompModel->update($values, $this->getParameter('id'));
       $this->flashMessage('Hodnoty uspesne ulozeny');
@@ -340,7 +348,7 @@ class AdministrationPresenter extends \BasePresenter {
     } catch (\Exception $e) {
       $this->flashMessage($e->getMessage().'Vložení dat do databáze se nepovedlo.');
     }
-    $this->getParameter('id') ? $this->redirect('Administration:myComps') : $this->redirect('Administration:administration');
+    $this->getParameter('id') ? $this->redirect('Administration:myComps') : $this->redirect('Administration:Administration');
   }
 
   public function CatFormSucceeded(Form $form) {

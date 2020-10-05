@@ -32,7 +32,7 @@ class CatModel extends BaseModel {
   public function getCatIfTableExist($id): array {
     return $this->db->table($this->table)
                     ->select('*')
-                    ->where('comp_id = ? AND table_exist = ?', $id, true)
+                    ->where('comp_id = ? AND table_exist = ?', $id, 1)
                     ->order('year_from DESC, name DESC')
                     ->fetchAll();
   }

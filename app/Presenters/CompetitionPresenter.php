@@ -36,28 +36,32 @@ class CompetitionPresenter extends \BasePresenter
 
   /*  --------------Handlers---------------*/
 
-  //dodelat generovani pdf
   public function handleResultToPDf($id_comp, $id_cat) {
     $html = $this->PdfModel->getResultToPrint($id_comp, $id_cat);
-    $stylesheet = file_get_contents(\Constants::PATH_TO_PRINT_CSS.'\result.css');
     $mpdf = new Mpdf(['orientation' => 'L', 'mode' => 'utf-8', 'margin_top' => 5]);
-    $mpdf->WriteHTML($stylesheet, 1);
     $mpdf->WriteHTML($html);
     $mpdf->output();
   }
 
-  public function HandleStartersToPdf($id_comp, $id_cat) {
+  public function handleStartersToPdf($id_comp, $id_cat) {
     $html = $this->PdfModel->getStartersToPrint($id_comp, $id_cat);
-    $stylesheet = file_get_contents(\Constants::PATH_TO_PRINT_CSS.'\starters.css');
     $mpdf = new Mpdf(['orientation' => 'P', 'mode' => 'utf-8', 'margin_top' => 5]);
-    $mpdf->WriteHTML($stylesheet, 1);
     $mpdf->WriteHTML($html);
     $mpdf->output();
   }
+
+  public function handleNoteResultPdf($id_comp, $id_cat) {
+    $html = $this->PdfModel->getNoteResult($id_comp, $id_cat);
+    $mpdf = new Mpdf(['orientation' => 'L', 'mode' => 'utf-8', 'margin_top' => 5]);
+    $mpdf->WriteHTML($html);
+    $mpdf->output();
+  }
+
+
   /*  --------------Renders---------------*/
 
   public function renderListOfPrereg(){
-    $tmp = $this->CompModel->getCompForRegister(null, $this->user->isInRole('admin'));
+    $tmp = $this->CompModel->getCompForRegister(null, $this->user->isInRole('admin'), true);
     $id = $this->getParameter('id');
     $this->template->id = $id;
     if(count($tmp) == 1 && $id == null) {
@@ -178,14 +182,14 @@ class CompetitionPresenter extends \BasePresenter
     $values = $form->values;
     $this->RacerModel->insert(array('comp_id' => $values->id_comp, 'racer_id' => $form->getName()), 'prereg');
     $this->flashMessage('Závodník byl úspěšně přihlášen na závod.');
-    $this->redirect('Competition:ListOfPrereg', array('id' => $values->id_comp));
+    $this->redirect('Competition:listOfPrereg', array('id' => $values->id_comp));
   }
   public function CompUnregistrationFormSucceeded(Form $form) {
     $values = $form->values;
     $id = $this->CompModel->isPrereg($form->getName(), $values->id_comp);
     $this->RacerModel->delete('prereg', $id);
     $this->flashMessage('Závodník byl úspěšně odhlášen ze závodu.');
-    $this->redirect('Competition:ListOfPrereg', array('id' => $values->id_comp));
+    $this->redirect('Competition:listOfPrereg', array('id' => $values->id_comp));
   }
 
   public function ResultFormSucceeded(Form $form) {

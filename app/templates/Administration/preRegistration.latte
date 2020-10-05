@@ -1,0 +1,40 @@
+{block content}
+{if $comps != null}
+  <table class="table border text-center ">
+    <thead class="bg-warning">
+    <tr>
+      <th scope="col">Jméno</th>
+      <th scope="col">Datum</th>
+      <th scope="col">Typ</th>
+      <th scope="col">propozice</th>
+      <th scope="col">Akce</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach $comps as $c}
+      <tr {if $compModel->isPrereg($id_racer, $c->id_comp)} class="bg-light-green"{/if}>
+        <td class="align-middle">{$c->name}</td>
+        <td class="align-middle">{$c->start|date:'%d.%m.%Y'}</td>
+        <td class="align-middle">{$c->comp_type}</td>
+        <td class="align-middle">
+          {if $c->plan_url}
+          <a href="{$c->plan_url}" class="link" target="_blank">propozice</a></td>
+          {/if}
+        <td class="align-middle">
+          {if !$compModel->isPrereg($id_racer, $c->id_comp)}
+            {form compRegistrationForm-$c->id_comp}
+              {input id_racer class=>'hidden'}
+              {input registration class=>"btn btn-warning text-dark"}
+            {/form}
+          {else}
+            {form compUnregistrationForm-$c->id_comp}
+              {input id_racer class=>'hidden'}
+              {input registration class=>"btn btn-warning text-dark"}
+            {/form}
+          {/if}
+        </td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+{/if}

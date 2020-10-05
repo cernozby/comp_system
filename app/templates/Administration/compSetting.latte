@@ -1,0 +1,268 @@
+{block content}
+<div class="d-flex justify-content-around row margin-bottom">
+  <button class="btn btn-warning text-dark col-lg-2 col-md-2 col-sm-2" id="first" aria-pressed="true"><b>Nastavení Kategorií</b></button>
+  <button class="btn btn-warning text-dark col-lg-2 col-md-2 col-sm-2" id="second"aria-pressed="true"><b>Editace stranky zavodu</b></button>
+  <button class="btn btn-warning text-dark col-lg-2 col-md-2 col-sm-2" id="third" aria-pressed="true"><b>Detailni nastavení závodu</b></button>
+
+</div>
+
+<div class="first" style="display:">
+{form catForm}
+  <div class="cotainer">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card bg-gray-light">
+          <div class="card-header bg-warning"><span class="panel-title">Přidání kategorie</span></div>
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-md-6 ">{label name/}</div>
+              <div class="col-md-6">{label gender/}</div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-tag"></i> </span>
+                  {input name class=>"form-control"}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-venus-mars"></i> </span>
+                  {input gender class=>"form-control"}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 ">{label year_from/}</div>
+              <div class="col-md-6">{label year_to/}</div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-calendar"></i> </span>
+                  {input year_from class=>"form-control"}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-calendar"></i> </span>
+                  {input year_to class=>"form-control"}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">{label comp_type/}</div>
+              <div class="col-md-6 ">{label result_system/}</div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-trophy"></i> </span>
+                  {input comp_type class=>"form-control"}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group">
+                  <span class="input-group-addon bg-warning"> <i class="fa fa-trophy"></i> </span>
+                  {input result_system class=>"form-control"}
+                </div>
+              </div>
+            </div>
+
+
+            <div id="chooseBoulderView" style="display: none">
+              <div class="form-group row">
+                <div class="col-md-6 d-flex align-items-center justify-content-end">{label boulder_count /}</div>
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <span class="input-group-addon bg-warning"> <i class="fas fa-calculator		"></i> </span>
+                    {input boulder_count class=>"form-control"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="chooseResultSystemView" style="display: none">
+              <div class="form-group row">
+                <div class="col-md-6 d-flex align-items-center justify-content-end">{label bonus_first_try /}</div>
+                <div class="col-md-6">
+                  <div class="input-group">
+                    <span class="input-group-addon bg-warning"> <i class="fas fa-star		"></i> </span>
+                    {input bonus_first_try class=>"form-control"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <p>Pole označené * jsou povinné</p>
+
+            {input registration class=>"btn btn-warning btn-block text-dark"}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/form}
+{if count($cat) > 0}
+  <br><br>
+  <table class="table table-hover border text-center ">
+    <thead class="bg-warning">
+    <tr>
+      <th scope="col" colspan="8">Zapsané kategorie</th>
+    </tr>
+    <tr>
+      <th scope="col">Název</th>
+      <th scope="col">pohlaví</th>
+      <th scope="col">rok</th>
+      <th scope="col">typ závodu</th>
+      <th scope="col">vyhodnocení</th>
+      <th scope="col">počet bouldrů</th>
+      <th scope="col">bonus flash</th>
+      <th scope="col">Úpravy</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach $cat as $c}
+      <tr>
+        <td >{$c->name}</td>
+        <td >{$c->gender}</td>
+        <td >{$c->year_from} - {$c->year_to}</td>
+        <td >{$c->comp_type}</td>
+        <td >{$c->result_system}</td>
+        <td >{$c->boulder_count}</td>
+        <td >{$c->bonus_first_try}</td>
+        <td class="text-center">
+          <a href="{plink Administration:compSetting $c->comp_id , $c->id_category }" title="upravit" class="btn">
+            <i class="fas fa-pencil-alt fa"></i>
+          </a>
+          <a href="{plink deleteItem! type=>'CatModel', entity_id=>$c->id_category}" title="smazat" class="confirn btn">
+            <i class="fa fa-trash fa"></i>
+          </a>
+        </td>
+      </tr>
+    {/foreach}
+    </tbody>
+  </table>
+{/if}
+</div>
+<div class="second" style="display: none">
+  aaaa</div>
+<div class="third" style="display: none">
+    {form settingCompForm}
+      <div class="cotainer">
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card bg-gray-light">
+              <div class="card-header bg-warning"><span class="panel-title">Nastavení</span></div>
+              <div class="card-body">
+
+                <div class="form-group row">
+                    <div class="col-md-6 ">{label open_result/}</div>
+                    <div class="col-md-6 ">{label preregistration_open}</div>
+
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            {input open_result class=>"form-control"}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            {input preregistration_open class=>"form-control"}
+                        </div>
+                    </div>
+                </div>
+
+                  <div class="form-group row">
+                      <div class="col-md-6 ">{label preregistration_visible/}</div>
+                      <div class="col-md-6 ">{label comp_edit}</div>
+
+                      <div class="col-md-6">
+                          <div class="input-group">
+                              {input preregistration_visible class=>"form-control"}
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="input-group">
+                              {input comp_edit class=>"form-control"}
+                          </div>
+                      </div>
+                      <div class="col-md-6">
+                          <div class="input-group">
+                          </div>
+                      </div>
+                  </div>
+                {input send class=>"btn btn-warning btn-block text-dark"}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {/form}
+</div>
+
+<script>
+
+    var foo = function (view = "") {
+        if(view !== "first") { $("div.first").hide();}
+        if(view !== "second") { $("div.second").hide();}
+        if(view !== "third") { $("div.third").hide(); }
+    }
+
+    var bar = function (view = "") {
+        if(view !== "boulder") { $("#chooseBoulderView").hide();}
+
+    }
+
+    var fnc = function(){
+        var str = $("#frm-catForm-result_system").val();
+        var tmp = $("#frm-catForm-comp_type").val();
+        if(str === 'amatérské' && tmp === 'boulder') {
+            $("#chooseResultSystemView").show();
+        } else {
+            $("#chooseResultSystemView").hide();
+        }
+    };
+
+    $("#first").click(function() {
+        $("div.first").show();
+        foo("first");
+    });
+
+    $("#second").click(function() {
+        $("div.second").show();
+        foo("second");
+    });
+
+    $("#third").click(function() {
+        $("div.third").show();
+        foo("third");
+    });
+
+    $(document).ready(function () {
+        var str = $("#frm-catForm-result_system").val();
+        var tmp = $("#frm-catForm-comp_type").val();
+        if(str === 'amatérské' && tmp === 'boulder') {
+            $("#chooseResultSystemView").show();
+        }
+        if(tmp === 'boulder') {
+            $("#chooseBoulderView").show();
+        }
+    });
+
+    $("#frm-catForm-comp_type").change(function(){
+        var str = $("#frm-catForm-comp_type").val();
+        if(str === 'boulder') {
+            $("#chooseBoulderView").show();
+        }
+        bar(str);
+    });
+
+    $("#frm-catForm-comp_type").change(fnc);
+    $("#frm-catForm-result_system").change(fnc)
+
+
+</script>

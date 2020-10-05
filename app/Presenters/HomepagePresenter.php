@@ -58,6 +58,8 @@ class HomepagePresenter extends \BasePresenter {
          ->setHtmlAttribute('placeholder', 'Heslo ověření*')
          ->setOmitted()
          ->addRule(Form::EQUAL, 'Zadaná hesla se neschodují.', $form['passwd']);
+    $form->addCheckbox('eu', 'Souhlasím se spracováním osobních údajů.')
+         ->setRequired('Musíte souhlasit se zpracováním osobních údajů. ');
     $form->addSubmit('registration', 'Registrovat');
     $form->onSuccess[] = [$this, 'RegistracionFormSucceeded'];
     return $form;
@@ -66,6 +68,8 @@ class HomepagePresenter extends \BasePresenter {
   public function RegistracionFormSucceeded($form, $values) {
     $passwd = $values->passwd;
     $userModel = $this->context->createInstance('UserModel');
+    unset($values->eu);
+  
     try {
       $userModel->newUser($values);
       $mail = new Nette\Mail\Message;
@@ -74,10 +78,10 @@ class HomepagePresenter extends \BasePresenter {
       $mail->setFrom('Zbysa.Cernohous@seznam.cz')
            ->addTo($values->email)
            ->setSubject('Registrace do systému bozala.cz')
-           ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>Registrace do systému <a href="' . \Constants::WEB_ADDRESS . '">bozala.cz</a> proběhla úspešně!, můžete začít z registrací závodníků. Kdyby jste si neveděli rady s přihlášením závodníků, návod je <a href="' . \Constants::WEB_ADDRESS . '/#"> zde.</a></p>
+           ->setHtmlBody('<p>Dobrý den, Ahoj </p><p>Registrace do systému <a href=http://bozala.cz">bozala.cz</a> proběhla úspešně!, můžete začít z registrací závodníků. Kdyby jste si neveděli rady s přihlášením závodníků, návod je <a href="http://bozala.cz/aktuality/jak-se-predregistrovat"> zde.</a></p>
                                <p> Vaše přihlašovací jméno je:<b> ' . $values->email . '</b> <br>Vaše heslo je:<b> ' . $passwd . '</b></p>
                                <p> S jakým koliv dotazem se neváhejte obrátit na email Zbysa.Cernohous[zavinac]seznam.cz</p>
-                               <p> S pozdravem a přáním pohodového dne,<br>organizátoři závodu</p>'
+                               <p> S pozdravem a přáním pohodového dne,<br><br>organizátoři závodu</p>'
            );
       $mailer->send($mail);
 

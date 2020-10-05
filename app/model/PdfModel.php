@@ -23,6 +23,10 @@ class PdfModel extends BaseModel {
         5 => 'monky_cup_logo.jpg'
   );
 
+  const STYLE_RESULT = 'result',
+        STYLE_STARTERS = 'starters',
+        STYLE_NOTE_RESULT = 'noteResult';
+
 
   public function __construct(Nette\Database\Context $database, Nette\DI\Container $container) {
     parent::__construct($database, $container);
@@ -31,6 +35,161 @@ class PdfModel extends BaseModel {
     $this->RacerModel = $container->createService('RacerModel');
     $this->ResultModel = $container->createService('ResultModel');
 
+  }
+
+  public function getStyle($type) {
+    $result = '';
+
+    if($type == self::STYLE_NOTE_RESULT) {
+      $result = '
+<style>
+.result {
+    text-align: center;
+    border: thin solid black;
+    border-collapse: collapse;
+    border-spacing: unset;
+    margin: 0px;
+    font-size: 12px;
+}
+.result thead tr th {
+    text-align: center;
+    border: thin solid black;
+    font-size: 14px;
+}
+.result tbody tr td {
+    text-align: center;
+    border-bottom: thin solid black;
+    padding: 5px;
+}
+.result thead tr .left, .result  tbody tr .left  {
+    text-align: left !important;
+    padding-left: 5px;
+}
+.border {
+    border-left: thin solid black;
+}
+.h1 {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+.title {
+    font-size: 17px;
+}
+.print {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+.print .left{
+    text-align: left;
+}
+.print .right {
+    text-align: right;
+}
+.orange {
+    background: orange;
+}
+</style>';
+
+    } elseif ($type == self::STYLE_RESULT) {
+
+      $result = '<style>
+.result {
+    text-align: center;
+    border: thin solid black;
+    border-collapse: collapse;
+    border-spacing: unset;
+    margin: 0px;
+    font-size: 12px;
+}
+.result thead tr th {
+    text-align: center;
+    border: thin solid black;
+}
+.result tbody tr td {
+    text-align: center;
+    border-left: thin solid black;
+}
+.result thead tr .left, .result  tbody tr .left {
+    text-align: left !important;
+    padding-left: 5px;
+}
+.h1 {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+.title {
+    font-size: 17px;
+}
+.print {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+.print .left{
+    text-align: left;
+}
+.print .right {
+    text-align: right;
+}
+.orange {
+    background: orange;
+}
+</style>';
+
+    } elseif ($type == self::STYLE_STARTERS) {
+      $result = '<style>
+.result {
+    text-align: center;
+    border: thin solid black;
+    border-collapse: collapse;
+    border-spacing: unset;
+    margin: 0px;
+    font-size: 12px;
+}
+.result thead tr th {
+    text-align: center;
+    border: thin solid black;
+}
+.result tbody tr td {
+    text-align: center;
+    border-left: thin solid black;
+}
+.result thead tr .left, .result  tbody tr .left  {
+    text-align: left !important;
+    padding-left: 5px;
+}
+.h1 {
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.title {
+    font-size: 17px;
+}
+.print {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.print .left{
+    text-align: left;
+}
+
+.print .right {
+    text-align: right;
+}
+
+.orange {
+    background: orange;
+}
+</style>';
+    }
+    return $result;
   }
 
 
@@ -66,9 +225,67 @@ class PdfModel extends BaseModel {
   }
 
   public function addAuthorAndTime() {
+    $date = date('Y') == 2020 ? '2020' : '2020 - ' . date('Y');
+
     $tr = Html::el('tr')->addHtml(Html::el('td')->class('left')->addText('Tisk '. date('H: i: s')));
-    $tr->addHtml( Html::el('td')->class('right')->addText('© Zbyšek Černohous 2020 - ' .date('Y')));
+    $tr->addHtml( Html::el('td')->class('right')->addText('© Zbyšek Černohous '.$date));
     return Html::el("table text-align='center'")->class('print')->addHtml($tr);
+  }
+
+  public function getNoteResult($id_comp, $id_cat) {
+    $cat_name = $this->CatModel->createCatName($id_cat);
+    $category = $this->getRow('category', $id_cat);
+    $countOfColums = 2*$category->boulder_count + $category->route_count + $category->speed_count + 3;
+    $racers = $this->CompModel->getRacerByCategory($id_comp, $id_cat);
+
+    $base = Html::el('null');
+    $base->addHtml($this->addLogosTable());
+    $base->addHtml($this->addCompNameAndType($id_comp,'Zapisovací listina'));
+
+    //set table head
+    $table = Html::el('table width="100%"')->class('result');
+    $thead = Html::el('thead');
+
+    $row = Html::el('tr');
+    $row->addHtml(Html::el('th colspan="'.$countOfColums.'"')->addText('Kategorie: ' . $cat_name)->class('left'));
+    $thead->addHtml($row);
+
+    $row = Html::el('tr');
+    $row->addHtml(Html::el('th')->class('left')->addText('Jméno'));
+    $row->addHtml(Html::el('th')->addText('Ročník'));
+    $row->addHtml(Html::el('th')->class('left')->addText('Oddíl'));
+
+    for ($i = 1; $i <= $category->boulder_count; $i++) {
+      $row->addHtml(Html::el('th')->addText("b{$i}z"));
+      $row->addHtml(Html::el('th')->addText("b{$i}t"));
+    }
+    for ($i = 1; $i <= $category->route_count; $i++) {
+      $row->addHtml(Html::el('th')->addText("cesta{$i}"));
+
+    }
+    for ($i = 1; $i <= $category->speed_count; $i++) {
+      $row->addHtml(Html::el('th')->addText("cas{$i}"));
+    }
+
+    $table->addHtml($thead->addHtml($row));
+
+    $tbody = Html::el('tbody');
+    foreach ($racers as $r) {
+      $row = Html::el('tr');
+      $row->addHtml(Html::el('td')->class('border')->addText($r->first_name .' '. $r->last_name)->class('left'));
+      $row->addHtml(Html::el('td')->class('border')->addText($r->born));
+      $row->addHtml(Html::el('td')->class('left border')->addText($r->club));
+      for($i = 1; $i <= ($countOfColums-3); $i++) {
+        $row->addHtml(Html::el('td')->class('border'));
+      }
+      $tbody->addHtml($row);
+    }
+
+    $base->addHtml($table->addHtml($tbody));
+    $base->addHtml($this->addAuthorAndTime());
+
+    $base->addHtml($this->getStyle(self::STYLE_NOTE_RESULT));
+    return $base;
   }
 
   public function getStartersToPrint($id_comp, $id_cat) {
@@ -105,6 +322,8 @@ class PdfModel extends BaseModel {
 
     $base->addHtml($table);
     $base->addHtml($this->addAuthorAndTime());
+
+    $base->addHtml($this->getStyle(self::STYLE_STARTERS));
     return $base->toHtml();
 
   }
@@ -176,6 +395,8 @@ class PdfModel extends BaseModel {
     $table->addHtml($tbody);
     $base->addHtml($table);
     $base->addHtml($this->addAuthorAndTime());
+
+    $base->addHtml($this->getStyle(self::STYLE_RESULT));
     return $base->toHtml();
   }
 
